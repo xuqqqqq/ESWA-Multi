@@ -1,5 +1,5 @@
 param(
-    [ValidateSet("auto", "vehicle", "algorithm", "sensitivity", "model", "priority")]
+    [ValidateSet("auto", "vehicle", "algorithm", "ablation", "sensitivity", "model", "priority")]
     [string]$Phase = "auto",
     [ValidateSet("smoke", "quick", "paper", "full")]
     [string]$Mode = "quick"
@@ -15,7 +15,7 @@ $historyLog = Join-Path $resultsDir "research_task_history.log"
 $lockFile = Join-Path $resultsDir "research_experiment.lock"
 $phaseFile = Join-Path $resultsDir "research_phase.txt"
 $staleLockMinutes = 180
-$phases = @("algorithm", "sensitivity", "model", "priority", "vehicle")
+$phases = @("algorithm", "ablation", "sensitivity", "model", "priority", "vehicle")
 
 New-Item -ItemType Directory -Force -Path $resultsDir | Out-Null
 Add-Content -Path $historyLog -Value "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] start phase=$Phase mode=$Mode" -Encoding utf8
@@ -68,6 +68,9 @@ try {
     switch ($actualPhase) {
         "algorithm" {
             Run-MatlabBatch "outputFile=runAlgorithmComparison('$Mode'); disp(outputFile);"
+        }
+        "ablation" {
+            Run-MatlabBatch "outputs=runAblationStudy('$Mode'); disp(outputs.summaryFile);"
         }
         "sensitivity" {
             Run-MatlabBatch "outputFile=runRevisedSensitivityResume('$Mode'); disp(outputFile);"

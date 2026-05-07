@@ -2,6 +2,16 @@
 
 Use these prompts to generate clean conceptual figures. Keep final paper labels in LaTeX whenever possible; ask the image model to use simple labels only, because small text in generated images can be unreliable.
 
+For figure selection and naming, see `figure_strategy.md`.
+
+Recommended priority:
+
+1. Generate Figure D first, because it directly supports the multi-period contribution.
+2. Generate Figure C second, because it communicates algorithmic novelty.
+3. Generate Figure F third, because it explains the dynamic damage mechanism.
+4. Generate Figure E only if the model-comparison section needs a stronger visual explanation.
+5. Generate Figure B only if the algorithm pseudocode feels insufficient; otherwise keep it out to avoid a redundant flowchart.
+
 ## Global Style Prompt
 
 Apply this style to every figure:
@@ -80,6 +90,12 @@ Panel (c): Route rebuilding
 Use simple numbered nodes, thin arrows, and consistent colors. Avoid detailed numerical values. Use only short labels: before, after, Period 1, Period 2, inventory feasible.
 ```
 
+Text-light regeneration prompt:
+
+```text
+Regenerate the same three-panel operator figure with almost no embedded text. Keep only these labels: (a), (b), (c), before, after, Period 1, Period 2. Use icons for inventory and feasibility instead of explanatory sentences. Leave clean whitespace above each panel so final captions can be added in LaTeX.
+```
+
 ## Figure D: Single-Period Aggregation vs Multi-Period Dispatch
 
 Recommended use: conceptual support for the multi-period importance section. This is strongly aligned with our argument.
@@ -103,6 +119,12 @@ Main message:
 The total resource amount can be the same, but the timing of availability changes the delivery loss.
 
 Use white background, flat vector style, restrained colors. Use short labels only.
+```
+
+Text-light regeneration prompt:
+
+```text
+Regenerate the two-panel single-period versus multi-period dispatch figure with minimal text. Keep only these labels: single-period aggregation, multi-period dispatch, Period 1, Period 2, Period 3, Depot, same total resources. Do not include bullet lists, equations, or numerical values. Make the timing contrast visually obvious through split resource boxes and later service arrows.
 ```
 
 ## Figure E: Damage-Oriented Routing vs Distance-Oriented Routing
@@ -153,19 +175,16 @@ Center:
 Use minimal labels: node damage, waiting time, damaged road, alternative road, arrival time, total loss. White background, vector style, restrained colors.
 ```
 
-## Figure G: Convergence Curve Concept Template
-
-Recommended use: only if we cannot get clean trace data. Prefer code-generated convergence curves if trace data are available.
+Text-light regeneration prompt:
 
 ```text
-Create a clean academic convergence-curve template comparing IHGA, IMA, and VNS.
+Regenerate the dynamic damage mechanism as a text-light academic diagram. Do not include equations. Use three visual elements only: an unserved node whose damage grows with waiting time, a served node whose loss is reduced after delivery, and two alternative roads where the shorter road is damaged and slower. Keep only short labels: waiting, served, damaged road, safer road, arrival time, loss.
+```
 
-Use a white background with axes labeled Iteration and Total dynamic damage.
-Draw three smooth decreasing curves:
-- IHGA: green solid curve, fastest decline and lowest final value.
-- IMA: orange dashed curve, moderate decline and slightly higher final value.
-- VNS: blue dotted curve, slower decline and higher final value.
-Include a small legend. Do not include fake numerical tick labels unless they are simple and generic. Make the figure look like a scientific plot, not a business chart.
+## Figure G: Convergence Curve Concept Template
+
+```text
+Do not use Image2 for convergence or sensitivity figures in this manuscript. Generate convergence, vehicle-sensitivity, period-sensitivity, service-period, bar-chart, and table evidence from the actual experiment CSVs.
 ```
 
 ## Best-Practice Notes
@@ -174,3 +193,4 @@ Include a small legend. Do not include fake numerical tick labels unless they ar
 - Use GPT Image2 for conceptual mechanism figures: delivery-system overview, algorithm flow, operator mechanism, and single-period vs multi-period explanation.
 - Avoid asking the image model to render dense equations, tables, or long labels.
 - If the generated figure has wrong text, export a text-free version and add labels in LaTeX, PowerPoint, or Illustrator.
+- Do not use Image2 for numerical result figures. If a figure contains experimental values, generate it from the result CSVs instead.

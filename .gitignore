@@ -27,6 +27,8 @@ latex/*_multiperiod_*.pdf
 
 # Generated reports and experiment outputs
 results/
+latex/generated_ablation_rows_smoke.tex
+latex/generated_ablation_rows_quick.tex
 tools/eswa_pages/
 tools/manuscript_*_pages/
 tools/manuscript_figcheck_pages*/

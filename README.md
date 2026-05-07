@@ -29,3 +29,10 @@ latexmk -pdf -interaction=nonstopmode -halt-on-error manuscript.tex
 ```
 
 Generated experiment outputs and local agent/runtime files are intentionally ignored by git. Re-run the scripts above to regenerate result CSV files.
+
+## Conceptual figures
+
+Use data-generated figures for numerical results and GPT Image2 only for conceptual mechanism diagrams. The recommended figure plan and prompts are in:
+
+- `latex/figure_strategy.md`
+- `latex/figure_prompts_image2.md`

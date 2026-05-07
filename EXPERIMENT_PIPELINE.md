@@ -12,6 +12,7 @@ This workspace now uses one unified experiment pipeline for the dynamic multi-pe
 
 - `runVehicleSensitivity('quick')`: vehicle-number sensitivity for C, R, and RC instances.
 - `runAlgorithmComparison('quick')`: VNS vs IMA vs IHGA.
+- `runAblationStudy('quick')`: operator ablation for the proposed IHGA components.
 - `runAdditionalSensitivity('quick')`: planning-period and inventory-supply sensitivity.
 - `runModelComparison('quick')`: CVRP, CCVRP, and dynamic-damage IHGA comparison.
 - `runPriorityAnalysis('quick')`: low/medium/high priority node service order and damage analysis.
@@ -41,7 +42,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\run_research_experimen
 The loop runs one phase per trigger in this order:
 
 ```text
-algorithm -> sensitivity -> model -> priority -> vehicle
+algorithm -> ablation -> sensitivity -> model -> priority -> vehicle
 ```
 
 A lock file prevents overlapping MATLAB runs. If a phase takes longer than five minutes, the next trigger is skipped until the current phase finishes.
