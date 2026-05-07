@@ -1,0 +1,60 @@
+# Local agent/runtime state
+.omx/
+rollback_backup_*/
+
+# MATLAB generated files / backups
+*.asv
+*.mat
+*.mex*
+*.bak
+
+# LaTeX build outputs
+latex/*.aux
+latex/*.bbl
+latex/*.blg
+latex/*.fdb_latexmk
+latex/*.fls
+latex/*.log
+latex/*.out
+latex/*.spl
+latex/*.synctex.gz
+latex/render_check*/
+latex/*_check.pdf
+latex/*_figcheck.pdf
+latex/*_review.pdf
+latex/*_extended_*.pdf
+latex/*_multiperiod_*.pdf
+
+# Generated reports and experiment outputs
+results/
+tools/eswa_pages/
+tools/manuscript_*_pages/
+tools/manuscript_figcheck_pages*/
+tools/eswa_experiment_pages_contact_sheet.png
+tools/manuscript_figcheck_contact*.png
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Reference papers / generated PDFs
+*.pdf
+!latex/manuscript.pdf
+
+# Temporary files
+tmp_*
+*.bak*
+latex/ablation_table_test.*
+latex/compile_last.txt
+latex/texput.log
+latex/vehicle_sensitivity_quick_aggregate_summary.csv
+latex/manuscript_*.aux
+latex/manuscript_*.bbl
+latex/manuscript_*.blg
+latex/manuscript_*.fdb_latexmk
+latex/manuscript_*.fls
+latex/manuscript_*.log
+latex/manuscript_*.out
+latex/manuscript_*.spl
+latex/manuscript_*.pdf
+!latex/manuscript.pdf

@@ -1,0 +1,1411 @@
+                                                              Expert Systems With Applications 314 (2026) 131644
+
+
+                                                                     Contents lists available at ScienceDirect
+
+
+                                                         Expert Systems With Applications
+                                                            journal homepage: www.elsevier.com/locate/eswa
+
+
+
+
+A routing problem with dynamic damage and multi-road selection in
+post-earthquake humanitarian logistics
+Xuan Zhao               a , Qingguo Bai             b , Jie Wei         c,∗, Bingnan Yang               d
+
+a
+    School of Management, Huazhong University of Science and Technology, Luoyu Road 1037, Wuhan, 430074, China
+b School of Management, Qufu Normal University, Yantai North Road 80, Rizhao, 276826, China
+c
+    School of Computer Science and Technology, Huazhong University of Science and Technology, Luoyu Road 1037, Wuhan, 430074, China
+d School of Economics Management and Law, Hubei Normal University, Cihu Road 11, Huangshi, 435002, China
+
+
+
+
+a r t i c l e             i n f o                          a b s t r a c t
+
+Keywords:                                                  In this paper, the problem of delivering relief supplies after an earthquake is investigated. Multiple roads are
+Post-earthquake delivery                                   available between two disaster nodes, with each node and road exhibiting heterogeneous initial damage degrees,
+Cumulative capacitated vehicle routing                     natural deterioration rates, and recovery rates. The loss of these nodes and roads is constructed as a dynamic
+problem
+                                                           function over time. Additionally, the travel speeds of vehicles are aﬀected by the degree of road damage. The
+Multiple road selection
+Dynamic loss
+                                                           proposed problem is deﬁned as the Dynamic Cumulative Capacitated Vehicle Routing Problem with Multi-Road
+Hybrid genetic algorithm                                   Selection (DCCVRPMRS). A Mixed-Integer Nonlinear Programming (MINP) model is constructed to minimize
+                                                           the cumulative loss induced at all disaster nodes. We propose an improved Hybrid Genetic Algorithm (IHGA) to
+                                                           solve the DCCVRPMRS. The algorithm includes four components: population initialization based on 𝑘-means and
+                                                           random generation, route similarity-based crossover, a local search for delivery routes with an adaptive strategy,
+                                                           and a local search for road selection purposes. Numerous experiments are conducted to compare the proposed
+                                                           approach with other algorithms, validating the eﬀectiveness of IHGA. We also compare several delivery strategies
+                                                           under diﬀerent objectives, priority factors, and disaster scenarios with cluster characteristics. The results indicate
+                                                           that the clusters with the highest initial disaster degrees and deterioration rates are not always prioritized for
+                                                           delivery. Moderate-to-high serious clusters that are concentrated and located near the depot generally have
+                                                           higher delivery priority levels. Although prioritizing delivery to distant nodes with the most severe damage
+                                                           reduces their losses, it signiﬁcantly increases the losses incurred in areas with concentrated clusters, increasing
+                                                           the overall loss across all disaster nodes.
+
+
+
+1. Introduction                                                                                suﬀered direct economic losses of RMB 3.79 billion in 2024.4 For ex-
+                                                                                               ample, the Wenchuan earthquake in Sichuan province measured 8.0
+    Natural disasters, such as earthquakes, tsunamis, and volcanic erup-                       in magnitude, resulting in 69,227 deaths, 374,643 injuries, and more
+tions, pose severe threats to human society, resulting in signiﬁcant ca-                       than 100,000 square kilometers of severely aﬀected areas5 with the di-
+sualties and enormous economic losses. Among them, earthquakes are                             rect economic losses exceeding $845 billion. The surrounding cities also
+some the most serious disasters threatening humanity. Since the 20th
+century, 5 mega-earthquakes have occurred globally with magnitudes
+                                                                                                 4
+                                                                                                   Ministry of Emergency Management of the People’s Republic of China, 2025,
+greater than 9.0.1 In 2024, natural disasters globally resulted in approx-
+                                                                                               https://www.mem.gov.cn/xw/yjglbgzdt/202501/t20250117_516032.shtml
+imately 18,100 deaths2 and economic losses reaching $368 billion.3 As                            5 The History of the People’s Republic of China, 2009, http://hprc.cssn.cn/
+an earthquake-prone country, China had 114,000 people aﬀected and                              gsgl/dsnb/zdsj/200908/t20090820_3955775.html
+
+
+    ∗
+    Corresponding author.
+    E-mail addresses: zhao1995@hust.edu.cn (X. Zhao), hustbaiqg@alumni.hust.edu.cn (Q. Bai), jiew@hust.edu.cn, wjjj@hust.edu.cn (J. Wei),
+yangbingnan@hbnu.edu.cn (B. Yang).
+  1 Earthquake Hazards Program, 2019, https://www.usgs.gov/programs/
+
+earthquake-hazards/science/20-largest-earthquakes-world-1900
+  2
+    Erick Burgueño Salas, 2025, https://www.statista.com/statistics/510952/
+number-of-deaths-from-natural-disasters-globally/
+  3
+    Erick Burgueño Salas, 2025, https://www.statista.com/statistics/510894/
+natural-disasters-globally-and-economic-losses/
+
+https://doi.org/10.1016/j.eswa.2026.131644
+Received 4 August 2025; Received in revised form 4 January 2026; Accepted 9 February 2026
+Available online 12 February 2026
+0957-4174/© 2026 Elsevier Ltd. All rights are reserved, including those for text and data mining, AI training, and similar technologies.
+X. Zhao et al.                                                                                                       Expert Systems With Applications 314 (2026) 131644
+
+
+experienced varying degrees of damage. Disaster nodes urgently require              • We propose a novel variant of the CCVRP named the DCCVRPMRS
+relief supplies after a disaster occurs, which is essential for saving lives          for delivering relief supplies. The loss incurred at each disaster node
+and reducing economic losses. Delivering relief supplies immediately                  and road is distinct and changes over time, inﬂuenced by the initial
+after an earthquake is crucial. Vehicle dispatching is directly aﬀected               damage degree, natural deterioration rate, and recovery rate. The
+by the degrees of damage suﬀered by disaster nodes. Typically, disaster               degree of damage suﬀered by each road can aﬀect the travel speeds
+nodes with severe damage are prioritized for rescue, which is one of the              of vehicles. A Mixed-Integer Nonlinear Programming (MINP) model
+key factors that determines the eﬀectiveness of rescue operations.                    is constructed to minimize the total cumulative loss incurred at all
+    Road damage caused by earthquakes, such as landslides and col-                    disaster nodes for the DCCVRPMRS.
+lapses, severely disrupts the transport of relief supplies. According to            • An Improved Hybrid Genetic Algorithm (IHGA) is proposed to solve
+
+statistics from the Ministry of Transport, the Wenchuan earthquake                    the DCCVRPMRS; it includes population initialization based on 𝑘-
+caused transport losses exceeding RMB 61 billion,6 53,295 km of dam-                  means and random generation, route-similarity-based crossover, and
+aged roads 5, and varying degrees of damage to 80% of the roads.7                     local searches for delivery routes and roads with heuristic operations.
+Road damage forces rescue vehicles to reduce their speed. In cases of               • Numerical experiments are conducted to validate the eﬀectiveness
+
+complete blockage, these vehicles must either wait for clearance or take              of the IHGA, along with sensitivity analyses focusing on various ob-
+alternative routes. These disruptions considerably hinder delivery eﬃ-                jectives, delivery priorities, and clustering characteristics. Interest-
+ciency and worsen losses at disaster nodes. Therefore, selecting a road               ingly, when the cluster with the highest initial damage or unit loss
+with strong traﬃc capacity or slight damage is vital to ensure timely                 cost is farther from the concentrated area (yet critical), its priority
+deliveries. Optimizing road selection when multiple roads are available               service level is relatively lower. Delivering relief supplies to the dis-
+is essential for improving the eﬃciency of relief supply deliveries and               tant area that has the highest initial damage or unit loss cost at the
+reducing losses at disaster nodes.                                                    expense of nearby concentrated disaster nodes is not a wise rescue
+    The Cumulative Capacitated Vehicle Routing Problem (CCVRP) is                     strategy. This may accelerate the deterioration of the concentrated
+commonly used to optimize delivery routes for relief supplies, to re-                 nodes and lead to a greater cumulative loss. When rescue resources
+duce total arrival times at disaster nodes to enhance delivery eﬃciency               are limited, prioritizing nodes near the rescue depot or concentrated
+(Huang et al., 2024; Ngueveu et al., 2010; Nucamendi-Guillén et al.,                  clusters with moderate to high degrees of damage and deterioration
+2018). The classical objectives are minimizing the total arrival time or              rates can minimize the cumulative loss.
+delivery costs (Khorsi et al., 2022; Penna et al., 2018; Weng et al., 2025).
+However, such objectives are not equivalent to minimizing cumulative                  The remainder of this paper is organized as follows. In Section 2, we
+loss across all disaster nodes. With varying initial damage levels, the            review related research on emergency logistics and the Vehicle Rout-
+damage suﬀered by each area increases at diﬀerent rates. Minimizing                ing Problem (VRP). Section 3 describes the main research problem and
+the cumulative waiting time does not ensure that serious areas receive             involves the construction of an MINP model. Section 4 introduces the
+priority for relief supplies. Therefore, optimizing delivery routes accord-        proposed IHGA and the improved strategies. In Section 5, numerical ex-
+ing to the degrees of damage suﬀered by diﬀerent disaster nodes is nec-            periments are conducted to validate the eﬀectiveness of IHGA relative to
+essary. Furthermore, the roads between two nodes also suﬀer from a                 other algorithms. We then compare diﬀerent objectives, analyze varying
+disaster, and the degree of damage to each road varies dynamically. The            delivery priorities, and discuss the disaster node delivery process with
+existing work frequently overlooks road congestion or adopts a binary              cluster characteristics. Section 6 presents the conclusions of this paper
+choice between detouring and waiting for the road to clear. In reality,            and several future research directions.
+road capacity depends on the degree of damage and varies dynamically
+over time. Consequently, treating roads merely as passable or impass-              2. Literature review
+able represents a simpliﬁcation that relaxes real-world constraints. To
+improve delivery eﬃciency and enhance realism, it is necessary to in-                  Our review focuses on three important aspects: (1) post-disaster re-
+corporate time-varying road capacity and optimize road selection ac-               lief logistics for disaster nodes, (2) emergency logistics considering road
+cordingly.                                                                         damage, and (3) meta-heuristic algorithms for emergency logistics.
+    Based on this, we propose the Dynamic Cumulative Capacitated Ve-
+hicle Routing Problem with Multi-Road Selection (DCCVRPMRS) to ad-                 2.1. Post-disaster relief logistics for disaster nodes
+dress the dynamic damage to post-disaster traﬃc networks and to min-
+imize total losses at all disaster nodes. Unlike traditional routing opti-             Cost-eﬀectiveness is one of the important objectives that is con-
+mization models and the CCVRP, the DCCVRPMRS is constructed based                  sidered during the process of delivering relief supplies after a disas-
+on the fundamental constraints of the CCVRP and incorporates two in-               ter, which determines whether the depot can aﬀord the rescue costs.
+novative features: the time-varying damage characteristics of disaster             Transport costs form an important component of the total costs. Penna
+nodes and roads, and a multi-road selection mechanism based on road                et al. (2018) investigated a post-earthquake scenario with heteroge-
+damage. These factors signiﬁcantly enhance the applicability and value             neous ﬂeets, multiple trips, and multiple depots to minimize the in-
+of the model in real-world disaster scenarios, thereby improving the               curred transportation costs. However, the sole consideration of trans-
+level of provided humanitarian relief. To solve this problem, we propose           portation costs is insuﬃcient for achieving the objectives of humanitar-
+an improved metaheuristic algorithm to achieve eﬃcient delivery after              ian relief eﬀorts. Additional cost-related objectives, such as deprivation
+an earthquake. We analyze the optimal delivery routes under diﬀerent               costs, inventory costs, handling costs, and device costs, have been in-
+objectives, evaluate the delivery strategy based on the initial degree of          troduced to evaluate the relief performance achieved by humanitarian
+damage and deterioration rate to eﬀectively prioritize nodes, and imple-           logistics. As pioneers, Holguín-Veras et al. (2012) innovatively proposed
+ment numerical examples to examine disaster scenarios with clustering              deprivation costs to measure human suﬀering caused by a lack of access
+characteristics. Our contributions are detailed as follows.                        to a good or service. They considered the total logistics and depriva-
+                                                                                   tion costs as social costs. Some studies have subsequently applied this
+                                                                                   concept. They minimize total social costs to achieve equity allocation,
+                                                                                   inventory, and routing optimization (Cotes & Cantillo, 2019; Gutjahr &
+  6
+    Wu Xin, 2008, https://www.chinanews.com.cn/gn/news/2008/06-03/                 Fischer, 2018; Van Steenbergen et al., 2025).
+1271145.shtml                                                                          However, cost-driven delivery strategies often fail to satisfy the re-
+  7 The Central People’s Government of the People’s Republic of China, 2010,       quirements of rescue timeliness. When a disaster strikes, disaster nodes
+https://www.gov.cn/jrzg/2010-06/01/content_1618352.htm                             need emergency supplies quickly. Rescues need to occur within a very
+
+                                                                               2
+X. Zhao et al.                                                                                                     Expert Systems With Applications 314 (2026) 131644
+
+
+short period to guarantee the survival rate (Farahani et al., 2020). There-         age of nodes and road arcs. Akbari and Shiri (2022) investigated relief
+fore, the rescue time or cumulative waiting time for all disaster nodes             distribution by teams that must detour around blocked roads. Chai et al.
+has become another important indicator. Khorsi et al. (2022) consid-                (2024) proposed a fuzzy multi-objective model for post-disaster relief
+ered a multi-period, multi-depot, and multi-trip VRP, aiming to mini-               distribution, incorporating road damage, capacity limits, and traﬃc ﬂow
+mize the cumulative arrival time to improve the resulting survival rate.            saturation. Compared to spontaneous relief schemes, it showed that the
+Parappathodi and Archetti (2022) deﬁned a crowdsourced humanitar-                   designed traﬃc control scheme improves prioritization, eﬀectiveness,
+ian relief-based VRP to minimize the time required for serving the last             eﬃciency, and equity. Pratap and Aziz (2025) proposed a stochastic
+delivery node. Shiri et al. (2023) examined the ambulance dispatch and              graph-theoretic routing framework that incorporates the uncertainty of
+routing problem, aiming to minimize the sum of the longest waiting                  road network damage after a disaster.
+times for victims.                                                                      The third stream investigates the integration of road restoration
+    To balance economic eﬃciency and timeliness, considering both                   with relief logistics. Maya et al. (2016) investigated emergency repair
+costs and time has also become a focus of the current research. Allahvi-            scheduling for a disaster-damaged road network, aiming to minimize
+ranloo et al. (2014) minimized the total cost, which includes the mon-              the weighted sum of node access times. Results demonstrate that repair-
+etary value of travel costs and time, and maximized the utility gained              ing a strategic subset of damaged nodes can restore full accessibility. Li
+from visiting nodes. Huang et al. (2012) and Wang et al. (2014) focused             and Teo (2019) developed a multi-period bilevel programming model
+on travel times and delivery costs. The diﬀerence is that (Huang et al.,            for the post-disaster road network repair and rescue logistics problems.
+2012) introduced equity in delivery, whereas (Wang et al., 2014) consid-            Ajam et al. (2022) highlighted that debris clearance and road repair are
+ered the reliability of split deliveries. Gralla et al. (2014) considered the       vital for restoring network capacity. Farzaneh et al. (2023) proposed a
+amount of cargo to be delivered, the prioritization of aid by commodity             model-based data diﬀusion framework for coordinating road restoration
+type and delivery location, the speed of the delivery process, and the              and distribution under incomplete information, revealing that resource
+operational cost as objectives for optimizing vehicle routes. However,              scarcity ampliﬁes the need for operational integration.
+these methods neglect the impact of damage degrees on delivery prior-                   Despite recent advancements, current research typically categorizes
+ities, which is crucial for reducing the total loss. Yang et al. (2019) and         road conditions as either passable or impassable, often suggesting that
+Liu et al. (2022) considered the heterogeneity of damage degrees and                vehicles should wait for repairs or take detours. However, actual road
+time-varying damage in relief allocation and delivery tasks under ﬁre               accessibility is more accurately deﬁned by the extent of damage. There
+and epidemic scenarios. However, they did not incorporate the loss into             is a signiﬁcant gap in understanding how to capture the dynamic nature
+their objectives. Moreover, the heterogeneity of damage degrees and de-             of road damage, as vehicles can often navigate partially damaged roads
+terioration rates in disaster nodes has yet to be systematically explored           at reduced speeds instead of being forced to take a detour. Thus, the
+in post-earthquake emergency logistics.                                             crucial challenge of identifying the most eﬃcient route among multiple
+    Unlike existing models that primarily focus on cost, time, or their             roads with varying distances and damage levels remains underexplored.
+integration, this paper incorporates dynamic loss that captures the time-           This paper addresses the gap by focusing on optimal route programming
+varying degradation of disaster nodes and damaged roads. Based on                   to consider the dynamic damage condition of roads, aiming to minimize
+this, an optimization model is constructed with the objective of mini-              cumulative losses in post-disaster scenarios.
+mizing cumulative loss. Applied to post-earthquake logistics dispatch-
+ing, the proposed optimized routes are determined by prioritizing de-               2.3. Metaheuristic algorithms for emergency logistics
+liveries according to dynamic losses caused by worsening disaster con-
+ditions, thereby reducing total loss. This research oﬀers a new perspec-                The CCVRP is an extension of the VRP that is widely used for emer-
+tive on humanitarian logistics optimization and addresses a research gap            gency logistics; it has been proven to be an NP-hard problem (Ngueveu
+in the ﬁeld regarding disaster dynamic damage and loss-minimization                 et al., 2010; Zou et al., 2024). In contrast with the VRP, the CCVRP
+decision-making.                                                                    aims to minimize the cumulative arrival time for reaching customers
+                                                                                    rather than travel costs or distances. Some research has focused on ex-
+2.2. Emergency logistics considering road damage                                    act algorithms for the CCVRP, which attempts to ﬁnd the optimal deliv-
+                                                                                    ery routes (Damião et al., 2023; Lysgaard & Wøhlk, 2014; Rivera et al.,
+    Research on post-disaster emergency logistics emphasizes the criti-             2016). However, exact algorithms may become slow or fail to uncover
+cal challenge of road damage, which severely constrains the accessibility           optimal solutions (or even feasible solutions) as problem sizes increase
+and eﬃciency of relief transport. Existing studies can be broadly catego-           (Chern et al., 2010). This does not satisfy the timeliness requirements
+rized into three streams. The ﬁrst stream focuses on the facility location          of emergency logistics. Thus, metaheuristic algorithms, such as Hybrid
+under the uncertainty of road damage. Studies such as (Toﬁghi et al.,               Genetic Algorithm (HGA) (Tlili et al., 2022), Adaptive Large Neigh-
+2016) designed a two-tier humanitarian logistics network with multi-                borhood Search (ALNS) (Mattos Ribeiro & Laporte, 2012), Variable
+ple central warehouses and local distribution centers. Sanci and Daskin             Neighborhood Search (VNS) or Variable Neighborhood Decent (VND)
+(2019) integrated facility location with road restoration decisions in a            (Hamdi, 2024; Kyriakakis et al., 2022a; Smiti et al., 2020; Sze et al.,
+two-stage stochastic framework to jointly optimize pre-positioning and              2017), Tabu Search (TS) (Kyriakakis et al., 2022b), Ant Colony Opti-
+repair strategies. It signiﬁcantly reduced unmet demand and total cost              mization (ACO) (Kyriakakis et al., 2021), and Brain Storm Optimiza-
+compared to non-integrated approaches. Oksuz and Satoglu (2020) ad-                 tion (BSO) (Ke, 2018). Among them, HGA, also referred to as Memetic
+dressed the temporary medical center location under road damage un-                 Algorithm (MA), was ﬁrst applied to the CCVRP and outperformed it
+certainty. It minimizes setup and expected transport costs while consid-            (Ngueveu et al., 2010). Then, Gao et al. (2019) proposed an HGA to
+ering casualty triage and probabilistic road failures. Chang et al. (2024)          address the transit-based evacuation problem after a disaster. More-
+proposed a two-stage stochastic programming model, simultaneously                   over, Vasalakis and Spyridakos (2025) developed an improved MA to
+optimizing rescue center location and an inventory routing problem con-             optimize the scheduling of ambulances and other emergency vehicles
+sidering road damage and traﬃc density.                                             for rapidly transferring patients in medical rescue operations. How-
+    The second stream examined routing and relief distribution un-                  ever, the applications of HGA to post-earthquake relief delivery sce-
+der damaged road conditions. Several studies incorporate uncertainty                narios remain limited. Moreover, as a novel variant of the CCVRP, the
+in road availability into routing models. For instance, Oruc and Kara               DCCVRPMRS currently lacks eﬀective algorithms developed based on
+(2018) focused on post-disaster assessment routing to maximize cover-               HGA.
+
+
+
+                                                                                3
+X. Zhao et al.                                                                                                                  Expert Systems With Applications 314 (2026) 131644
+
+
+
+
+                                                  Fig. 1. Illustration of the delivery system for disaster nodes.
+
+
+3. Problem description and modeling                                                      According to Eq. (1), we derive the degree of loss of disaster node 𝑖
+                                                                                     at arrival time 𝑎𝑖 , as denoted in Eq. (2), assuming that 𝐷𝑖 (0) = 𝐷𝑖0 .
+3.1. Problem description
+                                                                                                             𝛽𝑖
+                                                                                     𝐷𝑖 (𝑡) = 𝐷𝑖0 𝑒−𝛾𝑖 𝑡 +      (1 − 𝑒−𝛾𝑖 𝑡 ), ∀𝑖 ∈ 𝑁𝑐 , 𝑡 = 𝑎𝑖                                  (2)
+    This study considers a delivery system that includes a single depot,                                     𝛾𝑖
+multiple disaster nodes, limited vehicles, and multiple roads between                    Similarly, even when multiple roads exist between two nodes, each
+two nodes. Fig. 1 illustrates the relief supply delivery process for all dis-        road may sustain varying degrees of damage, aﬀecting the average
+aster nodes. The vehicle should depart from the depot loaded with the                speeds of vehicles. The natural deterioration rate 𝛽𝑧 and the recovery
+relief supplies that must be delivered to the disaster nodes, and each               rate 𝛾𝑧 are introduced to characterize the damage suﬀered by road 𝑧.
+node can be served by only one vehicle. The vehicles used return to the              The dynamic formulation of the damage suﬀered by road 𝑧 at time 𝑡 can
+depot after completing the delivery process. The disaster node 𝑖 has a               be expressed as Eq. (3).
+loss 𝐷𝑖 (𝑡) that increases over time. We aim to identify an optimal route
+for delivering relief supplies to minimize the overall damage suﬀered                d𝑅𝑧 (𝑡)
+by disaster nodes. In particular, vehicles have multiple road options be-                    = 𝛽𝑧 − 𝛾𝑧 𝑅𝑧 (𝑡), ∀𝑧 ∈ 𝐸𝑖𝑗 , ∀𝑖, 𝑗 ∈ 𝑁, 𝑖 ≠ 𝑗, 𝑡 = 𝑎𝑖        (3)
+                                                                                        d𝑡
+tween two nodes during the delivery process, but only one can be se-
+                                                                                         According to Eq. (3), we derive the degree of loss suﬀered by road 𝑧
+lected for travel. Owing to earthquakes, each road sustains varying de-
+                                                                                     at time 𝑡, as denoted in Eq. (4), assuming that 𝑅𝑧 (0) = 𝑅𝑧0 .
+grees of damage, which increase over time, aﬀecting the average speed
+of vehicle travel. It is evident that dynamically selecting travel routes is
+                                                                                                             𝛽𝑧
+crucial for enhancing the eﬃciency of delivery and reducing the losses               𝑅𝑧 (𝑡) = 𝑅𝑧0 𝑒−𝛾𝑧 𝑡 +      (1 − 𝑒−𝛾𝑧 𝑡 ), ∀𝑧 ∈ 𝐸𝑖𝑗 , ∀𝑖, 𝑗 ∈ 𝑁, 𝑖 ≠ 𝑗, 𝑡 = 𝑎𝑖               (4)
+                                                                                                             𝛾𝑧
+induced at disaster nodes. Additionally, the general assumptions for the
+DCCVRPMRS are summarized as follows. (1) The relief supplies for each                    The objective function is to minimize the cumulative loss of all dis-
+disaster node are not to be split; (2) the average travel speed of vehicles          aster notes when the vehicles complete the rescue process. This reﬂects
+is aﬀected by the road conditions; and (3) delivery interruptions caused             the cumulative impact of the prolongation of the rescue time on the total
+by vehicle breakdowns during travel are ignored.                                     loss induced at all disaster nodes. It is expressed as Eq. (5) (𝜔𝑖 = 1, 𝑖 ∈ 𝑁𝑐
+    We deﬁne an emergency delivery network 𝐺 = (𝑁, 𝐸), where 𝑁                       if focusing on the loss).
+represents the set of all nodes within the network, i.e., 𝑁 = 𝑁𝑐 ∪ 𝑁𝑑 .
+                                                                                                   ∑ ∑
+𝑁𝑐 = {1, 2, … , 𝑛} is the set of all disaster nodes and 𝑁𝑑 = {0} is the set of       min 𝑂𝑏𝑗 =                𝜔𝑖 𝐷𝑖 (𝑎𝑖 )𝑦𝑖,𝑘                                                    (5)
+depots (In our study, only one depot is considered in the emergency de-                           𝑖∈𝑁𝑐 𝑘∈𝐾
+livery process). 𝐸 = {𝐸𝑖,𝑗 |𝑖 ∈ 𝑁, 𝑗 ∈ 𝑁, 𝑖 ≠ 𝑗} denotes the set of all avail-           The degree of road damage aﬀects the travel speeds of vehicles. For
+able edges (roads) in the network. Due to the multiple roads between                 example, compared with a road possessing minor damage, a severely
+two nodes, we denote 𝐸𝑖,𝑗 as the set of edges connecting nodes 𝑖 and 𝑗.              damaged road results in slower travel speeds. When a road completely
+The other notations and variables are summarized in Table 1.                         collapses, vehicles are prohibited from passing. According to Eq. (4),
+                                                                                                            𝛽                                            𝑅𝑧 (𝑡)
+                                                                                     when 𝑡 → ∞, 𝑅𝑧 (𝑡) → 𝛾𝑧 , the normalization of 𝑅𝑧 (𝑡) is 𝑅̃ 𝑧 (𝑡) = 𝛽𝑧𝑚𝑎𝑥  =
+                                                                                                                    𝑧
+                                                                                                                                                                         𝛾𝑧𝑚𝑖𝑛
+3.2. Objective function                                                              𝑅𝑧 (𝑡)𝛾𝑧𝑚𝑖𝑛
+                                                                                       𝛽𝑧𝑚𝑎𝑥
+                                                                                                 . 𝑅̃ 𝑧 (𝑡) = 0 indicates that the road is intact, and 𝑅̃ 𝑧 (𝑡) = 1 indi-
+    The damage suﬀered by disaster nodes may continually worsen in                   cates that the road has completely collapsed. In engineering, it is gen-
+the absence of oﬃcial humanitarian relief, especially due to secondary               erally believed that a road becomes inaccessible if 𝑅̃ 𝑧 (𝑡) > 0.814. The
+disasters such as aftershocks. Before humanitarian relief arrives, people            reduction rate exhibited by the travel speed on road 𝑧 is expressed as
+                                                                                     𝑅̃ 𝑧 (𝑡)
+typically engage in self-help spontaneously. Two factors may result in               0.814
+                                                                                              . Therefore, we deﬁne the function between the vehicle travel speed
+the damage dynamics of disaster nodes, aﬀecting the total loss induced               and the degree of road damage as Eq. (6), where 𝑣𝑧𝑘 ′ is the normal speed
+during the relief process. We deﬁne these two factors as 𝛽𝑖 and 𝛾𝑖 . 𝛽𝑖 and          of the vehicle and the road 𝑧 is inaccessible if 𝑣𝑧𝑘 ≤ 0.
+𝛾𝑖 represent the natural deterioration rate and the recovery rate resulting
+from self-help at disaster node 𝑖, respectively. Therefore, we express the                        𝑅̃ 𝑧 (𝑡) 𝑧 ′
+                                                                                     𝑣𝑧𝑘 = (1 −           )𝑣                                                                     (6)
+dynamic formulation of damage for disaster node 𝑖 at arrival time 𝑎𝑖 as                           0.814 𝑘
+in Eq. (1).
+                                                                                     3.3. Mixed-integer nonlinear programming
+
+d𝐷𝑖 (𝑡)                                                                                With the above notations and objective, the MINP for the proposed
+        = 𝛽𝑖 − 𝛾𝑖 𝐷𝑖 (𝑡), ∀𝑖 ∈ 𝑁𝑐 , 𝑡 = 𝑎𝑖                                 (1)
+ d𝑡                                                                                  DCCVRPMRS can be formulated as follows:
+
+                                                                                 4
+X. Zhao et al.                                                                                                                                       Expert Systems With Applications 314 (2026) 131644
+
+
+                          Table 1
+                          Notations and variables.
+                                                          Symbol      Description
+
+                             Sets                         𝐾           Set of available vehicles indexed by 𝑘
+                             Parameters                   𝑞𝑖          The relief supplies for disaster node 𝑖
+                                                          𝑄𝑘          The maximum load capacity of vehicle 𝑘
+                                                          𝑠𝑖          Service time at disaster node 𝑖
+                                                          𝑡𝑧𝑖,𝑗       Travel time from disaster node 𝑖 to 𝑗 via road 𝑧
+                                                             𝑧
+                                                          𝑑𝑖,𝑗        Distance between disaster node 𝑖 and 𝑗 on road 𝑧
+                                                          𝑀           A suﬃciently large number
+                                                          𝑣𝑧𝑘         The average travel speed for vehicle 𝑘 at road 𝑧
+                                                          𝐷𝑖 (𝑡)      Damage degree of disaster node 𝑖 at time 𝑡
+                                                          𝑅𝑧 (𝑡)      Damage degree of road 𝑧 at time 𝑡
+                                                          𝛽𝑖          Natural deterioration rate of disaster node 𝑖 𝛽𝑖 ∈ [𝛽𝑖𝑚𝑖𝑛 , 𝛽𝑖𝑚𝑎𝑥 ]
+                                                          𝛽𝑧          Natural deterioration rate of road 𝑧 𝛽𝑧 ∈ [𝛽𝑧𝑚𝑖𝑛 , 𝛽𝑧𝑚𝑎𝑥 ]
+                                                          𝛾𝑖          Recovery rate of disaster node 𝑖 𝛾𝑖 ∈ [𝛾𝑖𝑚𝑖𝑛 , 𝛾𝑖𝑚𝑎𝑥 ]
+                                                          𝛾𝑧          Recovery rate of road 𝑧 𝛾𝑧 ∈ [𝛾𝑧𝑚𝑖𝑛 , 𝛾𝑧𝑚𝑎𝑥 ]
+                                                          𝜔𝑖          Unit loss cost for disaster node 𝑖
+
+                             Decision variables           𝑎𝑖          A continuous variable that represents the arrival time of the vehicle at disaster node 𝑖
+                                                          𝑦𝑖,𝑘        A binary decision variable that equals 1 if vehicle 𝑘 serves disaster node 𝑖, and 0 otherwise
+                                                          𝑥𝑧𝑖,𝑗,𝑘     A binary decision variable that equals 1 if vehicle 𝑘 selects road 𝑧 from disaster node 𝑖 to 𝑗, and 0 otherwise.
+
+
+
+
+                                                                                                                 4. Optimization algorithms
+
+                                                                                                                     In real-life relief situations, a quick response is crucial for reducing
+                      ∑ ∑                                                                                        damage at disaster nodes, motivating a new exploration of eﬀective re-
+min 𝑂𝑏𝑗 =                           𝜔𝑖 𝐷𝑖 (𝑎𝑖 )𝑦𝑖,𝑘                                                   (7)
+                      𝑖∈𝑁𝑐 𝑘∈𝐾
+                                                                                                                 lief route planning algorithms (Sadeghi et al., 2023). Furthermore, the
+∑                                                                                                                proposed DCCVRPMRS is typically an NP-hard problem, with the aim of
+       𝑦𝑖,𝑘 = 1,                                            ∀𝑖 ∈ 𝑁𝑐                                   (8)        solving a nonlinear problem that contains exponential terms in its ob-
+𝑘∈𝐾
+ ∑ ∑                                                                                                             jective. Commercial solvers struggle to determine optimal or even fea-
+                     𝑥𝑧𝑖,0,𝑘 = 1,                           ∀𝑘 ∈ 𝐾                                    (9)        sible relief delivery routes within a short time, especially as the number
+𝑧∈𝐸𝑖,0 𝑖∈𝑁𝑐
+  ∑ ∑                                                                                                            of disaster nodes increases. On this basis, metaheuristic algorithms are
+                     𝑥𝑧0,𝑗,𝑘 = 1,                           ∀𝑘 ∈ 𝐾                                  (10)         well-suited for the requirement of quick responses.
+𝑧∈𝐸0,𝑗 𝑗∈𝑁𝑐                                                                                                          This paper proposes an IHGA to solve the DCCVRPMRS, aiming to
+∑ ∑                                                                                                              determine the optimal delivery routes for relief supplies to minimize
+                 𝑥𝑧𝑖,𝑗,𝑘 = 𝑦𝑖,𝑘 ,                           ∀𝑗 ∈ 𝑁𝑐 , ∀𝑘 ∈ 𝐾                        (11)
+𝑖∈𝑁 𝑧∈𝐸𝑖,𝑗                                                                                                       the cumulative loss incurred at disaster nodes. The HGA combines a
+∑                                                                                                                GA with a local search, which is eﬀective for solving NP-hard prob-
+       𝑥𝑧0,𝑗,𝑘 ≤ |𝑘|,                                       ∀𝑗 ∈ 𝑁𝑐 , ∀𝑧 ∈ 𝐸0,𝑗                     (12)         lems such as the VRP, traveling salesman problem (TSP), and ﬂow-shop
+𝑘∈𝐾
+∑∑ ∑ ∑                                                                                                           scheduling problem (Lee & Kim, 2024; Singh & Majumder, 2024; Zheng
+                              𝑥𝑧𝑖,𝑗,𝑘 = 1,                                                          (13)         et al., 2024). The proposed IHGA contains four parts, including initial-
+𝑖∈𝑁 𝑗∈𝑁 𝑘∈𝐾 𝑧∈𝐸𝑖,𝑗
+ ∑                                                                                                               ization, crossover, a local search for delivery routes, and a local search
+       (𝑦𝑖,𝑘 ⋅ 𝑞𝑖 ) ≤ 𝑄𝑘 ,                                  ∀𝑘 ∈ 𝐾                                  (14)         for road selection purposes. The pseudocode of the IHGA is shown in
+𝑖∈𝑁𝑐                                                                                                             Algorithm 1, and the ﬂowchart is shown in Fig. 2. We design two types
+                                        ∑
+𝑎𝑗 ≥ 𝑠𝑖 + 𝑎𝑖 + 𝑡𝑧𝑖,𝑗 + 𝑀(                    𝑦𝑖,𝑘 − 1),     ∀𝑖 ∈ 𝑁𝑐 , ∀𝑗 ∈ 𝑁𝑐                       (15)         of initialization schemes for generating the initial population in Sec-
+                                       𝑘∈𝐾                                                                       tion 4.1: 𝑘-means-based generation and random generation. We cluster
+           𝑧
+          𝑑𝑖,𝑗                                                                                                   the nodes according to their urgency through 𝑘-means clustering, pri-
+𝑡𝑧𝑖,𝑗 =          ,                                          ∀𝑘 ∈ 𝐾, ∀𝑧 ∈ 𝐸𝑖,𝑗                       (16)         oritizing the delivery of relief to disaster nodes with high degrees of
+          𝑣𝑧𝑘
+                                                                                                                 urgency. Section 4.2 represents the process of crossover, and it aims
+𝑥𝑧𝑖,𝑗,𝑘 = {0, 1},                                           ∀𝑖 ∈ 𝑁, ∀𝑗 ∈ 𝑁, ∀𝑘 ∈ 𝐾, ∀𝑧 ∈ 𝐸𝑖,𝑗                    to retain the excellent routes that appear in multiple individuals to en-
+                                                                                                    (17)         hance the convergence procedure. In Sections 4.3 and 4.5, a local search
+𝑦𝑖,𝑘 = {0, 1},                                              ∀𝑖 ∈ 𝑁𝑐 , ∀𝑘 ∈ 𝐾                        (18)         is applied to adjust the delivery sequence of the disaster nodes and the
+                                                                                                                 selection of a road between two nodes. Five operators are applied to
+𝑎𝑖 ≥ 0,                                                     ∀𝑖 ∈ 𝑁𝑐                                 (19)
+                                                                                                                 search for better delivery routes, and a heuristic road selection method
+                                                                                                                 is proposed to optimize the delivery routes. We also develop an adap-
+                                                                                                                 tive strategy for the local delivery route search process according to the
+     Constraint (8) ensures that each node can be served by only one ve-                                         priority given to nodes with high initial degrees of damage and deteri-
+hicle. Constraints (9) and (10) require that each vehicle departs from                                           oration rates, as detailed in Section 4.4.
+and returns to the depot. Constraint (11) represents the access consis-
+tency between edges and nodes. Constraint (12) ensures that the number                                           4.1. Initialization
+of utilized vehicles does not exceed the number of vehicles owned by
+the depot. Constraint (13) ensures that only one vehicle can choose one                                              Notably, each disaster node has a diﬀerent degree of damage and a
+road to travel from node 𝑖 to 𝑗. Constraint (14) indicates that the relief                                       diﬀerent deterioration rate. A node with a high degree of damage and
+supplies loaded by vehicle 𝑘 cannot exceed the maximum load capacity.                                            a high deterioration rate is more likely to receive relief supplies to re-
+Constraint (15) represents the continuity of the delivery time. Constraint                                       duce its loss. Therefore, the traditional initialization methods have lim-
+(16) calculates the travel time for vehicle 𝑘, and the average travel speed                                      itations in terms of prioritizing assistance to severely disaster-stricken
+𝑣𝑧𝑘 is aﬀected by the degree of route damage. Constraints (17), (18) and                                         nodes. 𝑘-means-based generation is introduced to solve the initialization
+(19) deﬁne the ranges of the decision variables.                                                                 problem and improve the quality of the initial population, and this
+
+                                                                                                             5
+X. Zhao et al.                                                                                                    Expert Systems With Applications 314 (2026) 131644
+
+
+
+
+                                                                 Fig. 2. Flowchart of IHGA.
+
+
+
+Algorithm 1 The pseudocode of IHGA.
+Require: 𝑛 (the number of disaster nodes), 𝑁 (the scale of the popula-
+    tion), 𝑖𝑡𝑒𝑟𝑀𝑎𝑥 (the maximum number of iterations)
+Ensure: 𝑅𝑜𝑢𝑡𝑒 (the best delivery route), 𝐿𝑜𝑠𝑠 (the minimum cumulative
+    loss of all disaster nodes)
+ 1: 𝑡 ← 1
+ 2: Initialize the population /*Section 4.1*/
+ 3: Get 𝑅𝑜𝑢𝑡𝑒 (the initial best delivery route) and 𝐿𝑜𝑠𝑠 (the cumulative
+    loss) from the initial population
+ 4: while 𝑡 ≤ 𝑖𝑡𝑒𝑟𝑀𝑎𝑥 do
+ 5: for 𝑘 = 1, 2, … , 𝑁 do
+ 6:      𝑋𝑘′ ← Crossover for 𝑋𝑘 /*Section 4.2*/
+ 7:      𝑋𝑘′′ ← Local search for delivery routes for 𝑋𝑘′ /*Section 4.3*/
+ 8:      𝑋𝑘′′′ ← Local search for road selection for 𝑋𝑘′′ /*Section 4.5*/
+ 9:      Update the population by 𝑋𝑘′′′
+10: end for                                                                                     Fig. 3. Illustration of 𝑘-means-based generation.
+11: 𝐿𝑜𝑠𝑠𝑡 ← Get the minimum loss of the population in generation 𝑡
+12: if 𝐿𝑜𝑠𝑠𝑡 < 𝐿𝑜𝑠𝑠 then
+13:      Update 𝑅𝑜𝑢𝑡𝑒 and 𝐿𝑜𝑠𝑠                                                     are assigned. An illustration of the 𝑘-means-based generation process is
+14: end if                                                                         shown in Fig. 3.
+15: 𝑡 ← 𝑡 + 1                                                                          Relying solely on 𝑘-means-based generation reduces the diversity of
+16: end while                                                                      the population and limits the search space. Therefore, random gener-
+17: return 𝑅𝑜𝑢𝑡𝑒, 𝐿𝑜𝑠𝑠                                                             ation is employed during the initialization process. Assuming that the
+                                                                                   population size is 𝑁, the 𝑁2 population is generated by 𝑘-means, and
+                                                                                   the other 𝑁2 population is generated randomly. All disaster nodes are
+process considers service prioritization. We ﬁrst cluster all the disaster         centrally placed in a pool and randomly inserted into any vehicle. The
+nodes according to their initial degrees of damage, natural deteriora-             random generation process is illustrated in Fig. 4.
+tion rates, and recovery rates via 𝑘-means. All nodes are arranged into
+three clusters: Very urgent, Urgent, and Slightly urgent. The degree of “ur-       4.2. Crossover
+                            𝛽
+gency” is determined by 𝛾𝑖 . The nodes clustered into the Very urgent
+                            𝑖
+category are prioritized for assignment to each vehicle. After the assign-             The crossover process aims to preserve and transfer high-quality de-
+ment of the Very urgent nodes, the nodes from the Urgent group begin               livery routes from multiple individuals to their oﬀspring, promoting
+to be assigned, and ﬁnally, the nodes from the Slightly urgent cluster             population evolution and yielding better delivery routes. During the
+
+                                                                               6
+X. Zhao et al.                                                                                                         Expert Systems With Applications 314 (2026) 131644
+
+
+                                                                                     optima. In each iteration, each operator is applied through a variable
+                                                                                     neighborhood descent (VND) procedure until the routes are no longer
+                                                                                     updated. Five operators are applied during the local search process. (1)
+                                                                                     Swap. Two nodes are randomly selected from one route, and the two
+                                                                                     nodes are swapped, as shown in Fig. 5(a). (2) Insert. A node from one
+                                                                                     route is randomly selected and inserted into another position along the
+                                                                                     route, as depicted in Fig. 5(b). (3) 2-Opt. A segment of one route is
+                                                                                     randomly selected, and the segment is ﬂipped, as shown in Fig. 5(c).
+                                                                                     The following operators are applied between the two routes. (4) Ex-
+                                                                                     change. Fig. 5(d) shows the Exchange process. A node from one route
+                                                                                     is selected and exchanged with another node from another route. (5)
+                                                                                     Relocate. A node from one route is selected and inserted into a ran-
+                                                                                     dom position from another route, and the Relocate process is depicted
+                                                                                     in Fig. 5(e). The local search process for delivery routes is shown in
+                                                                                     Algorithm 3.
+                  Fig. 4. Illustration of random generation.
+                                                                                     Algorithm 3 Local search for delivery routes.
+
+crossover process, each individual has a chance to be a parent, with the             Require: 𝑋𝑘 (The delivery routes of individual 𝑘), 𝛽max (The maximum
+other parent selected by a Ternary Tournament. Crossover is adopted only                 number of operators)
+if 𝑃𝑡 ≤ 𝑃𝑐 (𝑃𝑡 is randomly generated in each iteration, and 𝑃𝑡 ∈ [0, 1]. 𝑃𝑐          Ensure: 𝑋𝑘∗ (The new delivery routes of individual 𝑘)
+is the probability of crossover). If crossover is adopted, two individuals            1: 𝑁𝛽 ← {𝑁1 , 𝑁2 , … 𝑁𝛽max }
+are selected as parents: 𝑝1 and 𝑝2 . The similar routes that both parents             2: 𝑋𝑘′ ← 𝑁𝑈 𝐿𝐿
+have are calculated. Let 𝑟1 ∈ 𝑝1 and 𝑟2 ∈ 𝑝2 be the two routes with the               3: 𝑋𝑘∗ ← 𝑋𝑘
+most identical nodes. We retain the same nodes while diﬀerent nodes                   4: 𝛽 ← 1
+are inserted into other routes, ensuring that the inserted route is feasible.         5: while 𝛽 < 𝛽max do
+Notably, two methods are used for node insertion: random insertion and                6: 𝑋𝑘′ ← 𝑁𝛽 (𝛽, 𝑋𝑘∗ )
+greedy insertion. If the oﬀspring perform better than the parents do, we              7: if 𝑓 (𝑋𝑘′ ) < 𝑓 (𝑋𝑘∗ ) then
+replace the parents with the oﬀspring. The process of crossover is shown              8:      𝑋𝑘∗ ← 𝑋𝑘′
+in Algorithm 2.                                                                       9:      𝛽←1
+                                                                                     10: else
+Algorithm 2 Crossover.                                                               11:      𝛽 ←𝛽+1
+                                                                                     12: end if
+Require: 𝑝𝑜𝑝 (The population before crossover), 𝑃𝑐 (The probability of
+                                                                                     13: end while
+    crossover)
+                                                                                     14: return 𝑋𝑘∗
+Ensure: 𝑛𝑒𝑤𝑝𝑜𝑝 (The population after crossover)
+ 1: for 𝑖 = 1, 2, … , 𝑁 do
+ 2: 𝑃𝑡 ← Generate a random number from [0, 1]
+ 3: if 𝑃𝑡 ≤ 𝑃𝑐 then
+ 4:      𝑝1 ← 𝑝𝑖 from 𝑝𝑜𝑝                                                            4.4. Adaptive strategy for delivery routes
+ 5:      𝑝2 ← Select from 𝑝𝑜𝑝 by Ternary Tournament
+ 6:      𝑟1 , 𝑟2 ← 𝑟1 ∈ 𝑝1 , 𝑟2 ∈ 𝑝2 , which 𝑟1 and 𝑟2 have the most identical           To increase the probability of prioritizing services in nodes with high
+         nodes from the both parents                                                 initial damage degree and deterioration rate, we design an adaptive
+ 7:      Put the nodes that not appear in 𝑟2 from 𝑟1 into the 𝑛𝑜𝑑𝑒𝑃 𝑜𝑜𝑙              strategy for the local search process of delivery routes. The adaptive
+ 8:      for 𝑗 = 1, 2, … , the size of 𝑛𝑜𝑑𝑒𝑃 𝑜𝑜𝑙 do                                  strategy is applied to the Swap, Insert, Exchange, and Relocate processes.
+ 9:          𝑚 ← Generate a random number from [0, 1]                                Each operator has three options for selection: prioritizing high initial
+10:          if 𝑚 < 0.5 then                                                         degrees of damage, prioritizing high deterioration rates, and perform-
+11:             Random insertion for the node 𝑗                                      ing random operations. Each operation has an initial score, and this
+12:          else                                                                    score is updated via Eq. (20) if the operation optimizes the route, where
+13:             Greedy insertion for the node 𝑗                                      𝜓𝑖𝑛𝑒𝑤 is the updated score for strategy 𝑖, and 𝜓𝑖 is the previous score for
+14:          end if                                                                  strategy 𝑖. An operation with a high score has a higher probability of
+15:      end for                                                                     being chosen. The adaptive strategy for each operator is shown in Fig. 6
+16:      𝑝′1 ← 𝑝1 after crossover                                                    (we assume that the initial degree of damage 𝐷10 > 𝐷20 > … > 𝐷90 , and
+17:      if 𝑓 (𝑝′1 ) < 𝑓 (𝑝1 ) then                                                  the deterioration rate 𝛽1 < 𝛽2 < … < 𝛽9 ). Algorithm 4 provides a general
+18:          𝑝1 ← 𝑝′1                                                                framework.
+19:      end if
+20: end if                                                                                    | 𝐹 𝑖𝑡𝑛𝑒𝑠𝑠 − 𝐹 𝑖𝑡𝑛𝑒𝑠𝑠𝑛𝑒𝑤 |
+                                                                                     𝜓𝑖𝑛𝑒𝑤 = ||                        | + 𝜓𝑖
+                                                                                                                       |                                           (20)
+21: end for                                                                                   |        𝐹 𝑖𝑡𝑛𝑒𝑠𝑠        |
+22: 𝑛𝑒𝑤𝑝𝑜𝑝 ← Update 𝑝𝑜𝑝
+23: return 𝑛𝑒𝑤𝑝𝑜𝑝
+                                                                                     4.5. Local search for road selection
+
+                                                                                         In the DCCVRPMRS, multiple roads between two nodes can be se-
+4.3. Local search for delivery routes                                                lected, and the selection of diﬀerent roads aﬀects the eﬃciency of deliv-
+                                                                                     ery. Thus, optimizing the road selection process is crucial for emergency
+   The proposed algorithm incorporates several feasible local search op-             deliveries. We develop a VND framework for road selection, which in-
+erators to increase its search ability and facilitate its escape from local          corporates two methods: Random-selection and Greedy-selection. Random-
+
+                                                                                 7
+X. Zhao et al.                                                                                               Expert Systems With Applications 314 (2026) 131644
+
+
+
+
+                                                       Fig. 5. Operators for delivery routes.
+
+
+                                                                                   Table 2
+Algorithm 4 Adaptive strategy.                                                     Route and the selected roads for each vehicle.
+                                                                                     No.         Route                              Road
+ 1: 𝑡 ← 1                                                                            Vehicle 1   0 → 2 → 11 → 18 → 0                1→1→1
+ 2: 𝑠𝑝𝑞 ← 1 /*The score for the 𝑞th operation of operator 𝑝*/                        Vehicle 2   0 → 10 → 17 → 23 → 20 → 5 → 0      1→1→1→2→3
+ 3: while 𝑡 ≤ 𝑖𝑡𝑒𝑟𝑀𝑎𝑥 do                                                             Vehicle 3   0 → 21 → 22 → 25 → 19 → 0          1→1→1→2
+ 4: 𝑋𝑘′ ← Select an operation 𝑞 of the operator 𝑝 for 𝑋𝑘 by roulette,                Vehicle 4   0 → 1 → 6 → 24 → 0                 1→1→1
+                                                                                     Vehicle 5   0 → 12 → 15 → 9 → 16 → 13 → 0      1→1→1→1→1
+       and the selection probability is calculated by 𝑠𝑝𝑞
+                                                                                     Vehicle 6   0 → 4 → 8 → 3 → 14 → 7 → 0         1→1→1→2→3
+ 5: if 𝑓 (𝑋𝑘′ ) < 𝑓 (𝑋𝑘 ) then
+ 6:      𝑠𝑝𝑞 ← 𝑠𝑝𝑞 + 1
+ 7:      𝑋𝑘 ← 𝑋𝑘′
+ 8: end if                                                                   selection is an easy-to-understand method that involves randomly select-
+ 9: 𝑡 ← 𝑡 + 1                                                                ing a road. In Greedy-selection, we select the road that allows the vehicle
+10: end while                                                                to travel at the fastest speed. The process of the road selection is shown
+                                                                             in Algorithm 5
+
+                                                                         8
+X. Zhao et al.                                                                                                       Expert Systems With Applications 314 (2026) 131644
+
+
+
+
+                                 Fig. 6. Priority to high initial degrees of damage and high deterioration rate in local search.
+
+
+
+
+5. Experiments                                                                     damage, natural deterioration rate, and recovery rate for each disaster
+                                                                                   node and road. Three roads with diﬀerent distances, initial degrees of
+    In this section, we evaluate the performance of the proposed DC-               damage, natural deterioration rates, and recovery rates are generated
+CVRPMRS and the eﬀectiveness of IHGA through a series of numerical                 between two disaster nodes. The datasets and the parameters of the
+experiments. First, we present a basic experiment to illustrate the deliv-         model are available at https://github.com/WjjjGIT/DCCVRPMRS.git.
+ery and road selection processes. We then compare the results of IHGA              Other parameters related to the IHGA that are used in the experiments
+with those of other algorithms to assess its eﬀectiveness. Furthermore,            are as follows: the scale of the population 𝑁 = 20, the maximum num-
+we compare the disaster nodes and road losses of the DCCVRPMRS with                ber of iterations 𝑖𝑡𝑒𝑟𝑀𝑎𝑥 = 1, 000, the loss cost incurred for each node
+those of the basic VRP and CCVRP. The results indicate that the DC-                𝜔𝑖 = 1, and the initial standard vehicle speed 𝑣 = 1𝑘𝑚∕𝑚𝑖𝑛. We per-
+CVRPMRS ensures a delivery plan with minimal disaster loss. Finally,               formed a sensitivity analysis to select the probability of crossover, eval-
+we discuss scenarios where the degree of damage exhibits a clustering              uating values across the range {0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85}.
+eﬀect.                                                                             Based on the results, 𝑃𝑐 = 0.70 is ultimately selected.
+    To simulate the disaster scenarios, we develop datasets for conduct-               We conduct our experiments on the environment consisting of an
+ing numerical experiments based on the Solomon benchmark, which                    Intel(R) Core(TM) i5-8300H CPU @2.3GHz, 8GB of RAM, Windows 11
+is a classic benchmark for the VRP. We generate the initial degree of              operating system, and MATLAB 2019b software.
+
+                                                                               9
+X. Zhao et al.                                                                                                                             Expert Systems With Applications 314 (2026) 131644
+
+
+                                                                                                            Algorithm 5 Local search for road selection.
+
+
+
+
+                                                                                            3.29E-02
+                                                                                                            Require: 𝑋𝑘 (The delivery routes of individual 𝑘)
+
+
+
+
+                                                                               0.0000
+
+
+
+                                                                               0.0000
+                                                                               0.0006
+                                                                               0.0070
+
+                                                                               0.0019
+                                                                               0.0026
+                                                                               0.0370
+                                                                               0.0169
+                                                                               0.1818
+                                                                               0.3847
+                                                                               0.3018
+                                                                               0.3919
+                                                                                                            Ensure: 𝑋𝑘∗ (The new delivery routes of individual 𝑘)
+
+
+                                                                        Std
+                                                                                                             1: 𝑋𝑘∗ ← 𝑋𝑘
+                                                                                                             2: 𝑋𝑘′ ← 𝑁𝑈 𝐿𝐿
+
+
+
+
+                                                                               101.8007
+
+
+
+                                                                               196.8440
+                                                                               191.0035
+                                                                               195.0190
+
+                                                                               216.3587
+                                                                               357.3567
+                                                                               362.2386
+                                                                               353.9599
+                                                                               368.4939
+
+                                                                                            3.97E-02
+                                                                               94.0175
+                                                                               95.9745
+                                                                               92.8547
+                                                                        Mean                                 3: 𝛼 ← 1
+                                                                                                             4: while 𝛼 do
+                                                                                                             5: 𝑟 ← 𝑟𝑎𝑛𝑑() /*𝑟 is a random number in the range of [0, 1]*/
+                                                                                                             6: if 𝑟 < 0.5 then
+                                                                               101.8007
+                                                                               191.0008
+
+                                                                               196.7973
+                                                                               195.0173
+
+                                                                               216.3275
+                                                                               357.1529
+                                                                               361.8066
+                                                                               353.5926
+                                                                               368.0224
+
+                                                                                           9.59E-02
+                                                                               95.9742
+                                                                               92.8510
+                                                                               94.0175
+
+
+
+                                                                                                             7:      𝑋𝑘′ ← Random-selection for an edge 𝑒𝑖𝑗 randomly selected from
+                                                         IMA-B
+
+                                                                        Best
+
+
+
+
+                                                                                                                     𝑋𝑘
+                                                                                                             8: else
+                                                                                                             9:      𝑋𝑘′ ← Greedy-selection for an edge 𝑒𝑖𝑗 randomly selected from
+                                                                                                                     𝑋𝑘
+
+
+
+                                                                                            8.00E-06
+                                                                               0.8419
+                                                                               1.3982
+                                                                               1.6112
+                                                                               1.3083
+                                                                               2.6956
+                                                                               3.8278
+                                                                               1.7988
+                                                                               2.5567
+                                                                               4.5092
+                                                                               4.1365
+                                                                               3.9295
+                                                                               4.2656
+                                                                                                            10: end if
+                                                                        Std
+
+
+
+
+                                                                                                            11: if 𝑓 (𝑋𝑘′ ) < 𝑓 (𝑋𝑘∗ ) then
+                                                                                                            12:      𝑋𝑘∗ ← 𝑋𝑘′
+                                                                               104.8410
+                                                                               204.4479
+                                                                               208.5500
+                                                                               210.0212
+                                                                               227.0452
+                                                                               393.8048
+                                                                               396.4571
+                                                                               382.4682
+                                                                               396.0700
+
+                                                                                                            13: else
+                                                                                            5.07E-04
+                                                                               97.2000
+                                                                               99.3911
+                                                                               97.5093
+                                                                        Mean
+
+
+
+
+                                                                                                            14:      𝛼←0
+                                                                                                            15: end if
+                                                                                                            16: end while
+                                                                               101.8764
+                                                                               200.7747
+                                                                               200.4407
+                                                                               206.3835
+                                                                               222.0839
+                                                                               387.8152
+                                                                               390.5674
+                                                                               376.7712
+                                                                               390.8590
+
+                                                                                            2.07E-03
+
+
+
+
+                                                                                                            17: return 𝑋𝑘∗
+                                                                               95.5209
+                                                                               97.2834
+                                                                               95.6300
+                                                         IMA-A
+
+                                                                        Best
+
+
+
+
+                                                                                            1.78E-02
+                                                                               0.0006
+                                                                               0.0033
+                                                                               0.0574
+                                                                               0.0046
+                                                                               1.4950
+                                                                               0.1622
+                                                                               0.0918
+                                                                               0.2394
+                                                                               4.5244
+                                                                               1.1871
+                                                                               2.2749
+                                                                               1.5481
+                                                                        Std
+
+
+
+
+                                                                               101.8038
+                                                                               191.6460
+                                                                               195.0909
+                                                                               196.9740
+                                                                               216.5796
+                                                                               361.7272
+                                                                               363.1626
+                                                                               355.9491
+                                                                               369.5106
+
+                                                                                            2.33E-02
+                                                                               94.0178
+                                                                               95.9792
+                                                                               92.9068
+                                                                        Mean
+
+
+
+
+                                                                               101.8007
+                                                                               191.0054
+                                                                               195.0172
+                                                                               196.8205
+                                                                               216.3542
+                                                                               357.4751
+                                                                               362.1799
+                                                                               353.5827
+                                                                               367.9961
+
+                                                                                           5.59E-02
+                                                                               94.0175
+                                                                               95.9743
+                                                                               92.8512
+                                                         VNS-B
+
+                                                                        Best
+
+
+
+
+                                                                                            1.00E-05
+                                                                               2.1462
+                                                                               1.9864
+                                                                               3.0893
+                                                                               1.7045
+                                                                               6.8573
+                                                                               4.3901
+                                                                               6.9628
+                                                                               2.6461
+                                                                               6.0614
+                                                                               7.2182
+                                                                               3.4231
+                                                                               5.9008
+                                                                        Std
+
+                                                                               102.1859
+                                                                               103.6959
+                                                                               102.6416
+                                                                               109.4769
+                                                                               220.0839
+                                                                               215.7656
+                                                                               222.0685
+                                                                               231.7559
+                                                                               404.9132
+                                                                               412.5611
+                                                                               393.3070
+                                                                               405.5548
+
+                                                                                            1.03E-04
+                                                                        Mean
+
+
+
+
+                                                                                                                                      Fig. 7. Delivery route.
+                                                                               100.2415
+
+                                                                               105.6840
+                                                                               202.4086
+                                                                               208.9021
+                                                                               211.1563
+                                                                               227.7700
+                                                                               395.7794
+                                                                               398.2894
+                                                                               388.0353
+                                                                               398.4564
+
+                                                                                            5.21E-04
+                                                                               97.8308
+
+                                                                               98.4130
+                                                         VNS-A
+
+                                                                        Best
+
+
+
+
+                                                                                                            5.1. Basic experiment
+
+                                                                                                                We conduct a basic experiment to present the delivery process and
+                                                                               0.0000
+                                                                               0.0000
+                                                                               0.0000
+                                                                               0.0000
+                                                                               0.0009
+                                                                               0.0005
+                                                                               0.0286
+                                                                               0.0143
+                                                                               0.0660
+                                                                               0.0223
+                                                                               0.1846
+                                                                               0.2248
+
+
+
+
+                                                                                                            the selected roads. The developed instance based on C101 with 25 dis-
+                                                                        Std
+
+
+
+
+                                                                                                            aster nodes from the dataset is applied to the basic experiment. We opti-
+                 Comparison among diﬀerent algorithms.
+
+
+
+
+                                                                                                            mize the delivery route via the proposed IHGA, and the cumulative loss
+                                                                               101.8007
+                                                                               191.0023
+                                                                               195.0176
+
+
+
+                                                                               357.2381
+                                                                               361.8133
+                                                                               353.8714
+                                                                               368.2169
+                                                                               196.8511
+                                                                               216.3451
+                                                                               94.0175
+
+                                                                               92.8510
+                                                                               95.9742
+
+
+
+
+                                                                                                            for all disasters is 94.0175. The delivery route is illustrated in Fig. 7.
+                                                                        Mean
+
+
+
+
+                                                                                                            0 represents the depot, and the other scatters are disaster nodes. The
+                                                                                                            numbers on the line between two nodes represent the selected roads.
+                                                                                                            Table 2 presents the delivery route and the selected roads for each vehi-
+                                                                               101.8007
+
+                                                                               195.0167
+
+                                                                               216.3261
+                                                                               357.1519
+                                                                               361.7922
+                                                                               353.5632
+                                                                               367.9579
+                                                                               191.0009
+
+                                                                               196.8101
+                                                                               94.0175
+                                                                               95.9742
+                                                                               92.8510
+
+
+
+
+                                                                                                            cle. Taking Vehicle 2 as an example, the service sequence for Vehicle 2
+                                                         IHGA
+
+                                                                        Best
+
+
+
+
+                                                                                                            is 0 → 10 → 17 → 23 → 20 → 5 → 0, and the ﬁrst road is selected for the
+                                                                                                            vehicle traveling from the depot to node 10. The ﬁrst road is selected
+                                                                               RC101-100
+
+
+
+
+                                                                                                            from 17 to 23, etc. For the ﬁnal selection step, the third road is selected
+                                                                               RC101-25
+
+
+
+
+                                                                               RC101-50
+
+
+
+                                                                               R101-100
+                                                                               C101-100
+                                                                               C201-100
+                                                            instances
+
+
+
+
+                                                                               R101-25
+
+
+
+
+                                                                               R101-50
+                                                                               C101-25
+                                                                               C201-25
+
+
+
+                                                                               C101-50
+                                                                               C201-50
+
+
+
+
+                                                                                           𝑝-value
+
+
+
+
+                                                                                                            from 20 to 5. The selection step for returning to the depot is ignored.
+                 Table 3
+
+
+
+
+                                                                                                                In summary, the basic experiment presents the delivery and road
+                                                                                                            selection processes of the proposed DCCVRPMRS. It aims to reduce the
+                                                                                                            total cumulative loss for all disaster nodes rather than simply reducing
+
+                                                                                                       10
+X. Zhao et al.                                                                                                                 Expert Systems With Applications 314 (2026) 131644
+
+
+
+
+                                                        Fig. 8. Convergence curves of IHGA and comparison algorithms.
+
+
+
+      Table 4
+      Comparison among diﬀerent objectives.
+                    DCCVRPMRS                              CVRP                                                     CCVRP
+        Instances
+                    Total node loss   Total road loss      Total node loss   Gap%      Total road loss   Gap%       Total node loss   Gap%      Total road loss   Gap%
+
+        C101-25     94.0175           72.9678              106.0170          12.7631   144.4166          97.9182    112.5465          19.7081   99.9460           36.9727
+        C201-25     95.9742           96.6577              112.1764          16.8818   201.8268          108.8058   100.1469          4.3477    132.4042          36.9826
+        R101-25     92.8510           87.3542              105.0672          13.1568   81.2947           -6.9367    98.4282           6.0067    69.7900           -20.1069
+        RC101-25    101.8007          109.6313             108.7563          6.8326    160.1717          46.1003    102.8423          1.0232    114.5687          4.5036
+        C101-50     191.0009          153.0746             226.1165          18.3850   268.1338          75.1655    232.7755          21.8714   203.5438          32.9703
+        C201-50     195.0167          198.4566             236.5916          21.3186   371.3083          87.0980    224.2037          14.9664   246.8381          24.3789
+        R101-50     196.8101          233.7075             232.2339          17.9990   331.9403          42.0324    221.6870          12.6401   260.6863          11.5439
+        RC101-50    216.3261          248.5294             239.4141          10.6728   317.3258          27.6814    231.0451          6.8041    270.5721          8.8692
+        C101-100    357.1519          462.8547             431.7537          20.8880   524.6592          13.3529    418.5432          17.1891   369.4331          -20.1838
+        C201-100    361.7922          437.5299             450.8304          24.6103   465.9788          6.5022     436.9610          20.7768   391.7632          -10.4602
+        R101-100    353.5632          472.2324             399.0839          12.8748   446.0173          -5.5513    396.2672          12.0782   423.4933          -10.3210
+        RC101-100   367.9579          422.7328             442.0302          20.1306   602.7224          42.5776    403.4039          9.6332    437.0898          3.3962
+
+
+
+                                                                                        11
+X. Zhao et al.                                                                                                                               Expert Systems With Applications 314 (2026) 131644
+
+
+                       Table 5
+                       Comparison to heuristic delivery strategies.
+                         Instances      DCCVRPMRS         Priority to the highest initial damage      Gap%          Priority to the highest deterioration rate     Gap%
+
+                         C101-25        94.0175           107.2130                                    14.0352       95.0302                                        1.0772
+                         C201-25        95.9742           107.3764                                    11.8804       96.3070                                        0.3467
+                         R101-25        92.8510           106.4753                                    14.6733       93.6092                                        0.8166
+                         RC101-25       101.8007          109.8333                                    7.8905        102.1899                                       0.3823
+                         C101-50        191.0009          244.1863                                    27.8456       192.5034                                       0.7866
+                         C201-50        195.0167          245.1587                                    25.7116       195.9761                                       0.4919
+                         R101-50        196.8101          237.2832                                    20.5646       198.8860                                       1.0548
+                         RC101-50       216.3261          244.7566                                    13.1424       217.0171                                       0.3194
+                         C101-100       357.1519          438.7138                                    22.8368       360.4045                                       0.9107
+                         C201-100       361.7922          439.7560                                    21.5493       365.1399                                       0.9253
+                         R101-100       353.5632          418.4094                                    18.3408       357.4255                                       1.0924
+                         RC101-100      367.9579          431.3600                                    17.2308       370.7656                                       0.7630
+
+
+          Table 6
+          Priority service rates for disaster nodes with varying degrees of damage.
+             Damage degree       The objective of minimal travel distance        DCCVRPMRS         Damage degree        The objective of minimal travel distance      DCCVRPMRS
+
+             1                   0.1                                             0                 1                    0.2                                           0
+             1+𝛿                 0.1                                             0                 –                    –                                             –
+             1 + 2𝛿              0.1                                             0.04              1+𝛿                  0.2                                           0.08
+             1 + 3𝛿              0.1                                             0.04              –                    –                                             –
+             1 + 4𝛿              0.1                                             0.2               1 + 2𝛿               0.2                                           0.4
+             1 + 5𝛿              0.1                                             0.2               –                    –                                             –
+             1 + 6𝛿              0.1                                             0.08              1 + 3𝛿               0.2                                           0.36
+             1 + 7𝛿              0.1                                             0.32              –                    –                                             –
+             1 + 8𝛿              0.1                                             0.04              1 + 4𝛿               0.2                                           0.16
+             1 + 9𝛿              0.1                                             0.08              –                    –                                             –
+
+
+
+        Table 7
+        Priority service rates for disaster nodes with varying unit loss costs.
+           Loss cost     The objective of          DCCVRPMRS         Loss cost     The objective of          DCCVRPMRS           Loss cost     The objective of           DCCVRPMRS
+                         minimal travel                                            minimal travel                                              minimal travel
+                         distance                                                  distance                                                    distance
+
+           1             0.1                       0.04              1             0.2                       0.08                1             0.1                        0
+           1+𝜂           0.1                       0                 –             –                         –                   1+𝜂           0.1                        0
+           1 + 2𝜂        0.1                       0.04              1+𝜂           0.2                       0.08                1 + 2𝜂        0.1                        0.04
+           1 + 3𝜂        0.1                       0.04              –             –                         –                   1 + 3𝜂        0.1                        0.04
+           1 + 4𝜂        0.1                       0.2               1 + 2𝜂        0.2                       0.36                1 + 4𝜂        0.1                        0.16
+           1 + 5𝜂        0.1                       0.2               –             –                         –                   1 + 5𝜂        0.1                        0.2
+           1 + 6𝜂        0.1                       0.08              1 + 3𝜂        0.2                       0.32                1 + 6𝜂        0.1                        0.08
+           1 + 7𝜂        0.1                       0.24              –             –                         –                   1 + 7𝜂        0.1                        0.32
+           1 + 8𝜂        0.1                       0.04              1 + 4𝜂        0.2                       0.16                1 + 8𝜂        0.1                        0.04
+           1 + 9𝜂        0.1                       0.12              –             –                         –                   1 + 9𝜂        0.1                        0.12
+
+
+
+the travel distance or waiting time, thereby enhancing humanitarian                                experiments, and “Std” is the standard deviation of the ten experiments.
+relief eﬀorts.                                                                                     Four instances with 3 scales (25, 50, and 100 nodes) are applied to the
+                                                                                                   experiments.
+5.2. Eﬀectiveness of IHGA for the DCCVRPMRS                                                            From Table 3, it is obvious that IHGA performs better than the com-
+                                                                                                   peting algorithms do. Compared with those of the other algorithms, the
+    To evaluate the eﬀectiveness of the proposed IHGA, we conduct                                  delivery routes solved by IHGA lead to the lowest total cumulative loss
+comparison experiments with related metaheuristic algorithms that                                  for all disaster nodes over the 10 instances. The “Std” of IHGA is best
+have been developed in recent years. Owing to the novelty of the DC-                               for each instance, which indicates that IHGA has the best stability. Al-
+CVRPMRS, no metaheuristic algorithm is currently available for solving                             though the local search process for road selection is added to VNS-A and
+this problem. We select algorithms that are highly eﬀective at optimizing                          IMA-A, VNS-B and IMA-B achieve the minimum losses in only 2 and 5 in-
+the delivery process in emergency logistics for post-disaster situations.                          stances, respectively. This indicates that the proposed IHGA framework
+The VNS and MA are highly relevant to our algorithm. Therefore, the                                outperforms the other algorithms applied to the DCCVRPMRS.
+framework of the improved VNS proposed by Bruni et al. (2020) and                                      We also investigate the signiﬁcance of the experimental results ob-
+the framework of the improved MA proposed by Jiao et al. (2025) are                                tained by IHGA compared with other algorithms across diﬀerent in-
+compared with the IHGA; they are denoted VNS-A and IMA-A, respec-                                  stances. A t-test with a 5% signiﬁcance level is conducted. The 𝑝-
+tively. Since a road selection process is contained in DCCVRPMRS and                               value serves as an indicator of statistical signiﬁcance for each algo-
+VNS-A, and IMA-A lacks operations for optimizing the road selection                                rithm. If the 𝑝-value associated with a particular algorithm is less than
+process, we add the proposed local search for road selection to these                              0.05, it indicates statistical signiﬁcance for that algorithm (𝑝-values ≥
+methods and denote them as VNS-B and IMA-B, respectively. The re-                                  0.05 are shown in boldface). As shown in the last row of Table 3,
+sults of the comparison are shown in Table 3. The experiment involving                             the 𝑝-values conﬁrm that IHGA signiﬁcantly outperforms other algo-
+each algorithm for each instance is conducted ten times. “Best” is the                             rithms. With the road selection process, the performance of VNS and
+minimum cumulative loss of all nodes, “Mean” is the mean loss over ten                             IMA will be enhanced, which indicates the advantages of the proposed
+
+                                                                                              12
+X. Zhao et al.                                                                                                         Expert Systems With Applications 314 (2026) 131644
+
+
+
+
+   Fig. 9. The distribution of disaster nodes and the delivery routes (𝛿 = 1).          Fig. 10. The distribution of disaster nodes and the delivery routes (𝛿 = 2).
+
+
+                                                                                      the damage degrees of the nodes, which promotes the ability to obtain
+IHGA and the road selection process, while corroborating the statistical              the best delivery routes more quickly. Compared with other algorithms,
+ﬁndings.                                                                              it is critical for facilitating convergence to the best level in a few itera-
+    We also compare the convergence of IHGA with that of other algo-                  tions, which indicates that IHGA performs best in terms of convergence
+rithms in 3 instances with 3 scales (25, 50, and 100 nodes), as shown                 speed and accuracy.
+in Fig. 8. IHGA clearly has the best convergence speed relative to the
+other algorithms in each instance. For VNS-A and IMA-A without the                    5.3. Comparison among diﬀerent objectives
+local search process for road selection, they have good initial conver-
+gence but end up with local optima, which are caused by the lack of                      The classic VRP model is used to solve delivery problems in post-
+an optimization process for road selection. After adding the road selec-              disaster emergency logistics scenarios, with the objectives of minimiz-
+tion process, the convergence speed and accuracy of VNS-B and IMA-B                   ing the travel distance or cumulative waiting time at disaster nodes,
+can be signiﬁcantly improved. However, IHGA provides priority deliv-                  which diﬀers from the proposed DCCVRPMRS. Table 4 shows the com-
+ery to serious disaster nodes and an adaptive strategy for considering                parison results concerning the node and road loss of the DCCVRPMRS,
+
+                                                                                 13
+X. Zhao et al.                                                                                                       Expert Systems With Applications 314 (2026) 131644
+
+
+                                                                                     lief. The DCCVRPMRS also performs best in terms of the total road loss,
+                                                                                     achieving minimal loss in 8 instances relative to cumulative waiting
+                                                                                     time minimization. Multiple roads can be selected between two nodes
+                                                                                     in our study, which better reﬂects the actual delivery situation after
+                                                                                     a disaster. The proposed method helps maintain both the ideal travel
+                                                                                     speed and safety on less-damaged roads. Hence, an excellent road se-
+                                                                                     lection process is critical for enhancing the eﬃciency and safety of
+                                                                                     delivery.
+
+                                                                                     5.4. Analyses for priority to initial damage degree and deterioration rate
+
+                                                                                         In a disaster, the ultimate objective of humanitarian relief is to min-
+                                                                                     imize the loss for all disaster nodes, prioritizing nodes with severe dam-
+                                                                                     age for supply deliveries. However, it is worth investigating whether
+                                                                                     strictly following the principle of prioritizing the highest initial damage
+                                                                                     or deterioration rate eﬀectively minimizes the overall loss. In this sub-
+                                                                                     section, we employ two heuristic delivery strategies to optimize routes:
+                                                                                     prioritizing the highest initial damage degree and prioritizing the high-
+                                                                                     est deterioration rate. The deterioration rate of a disaster node is related
+                                                                                     to both its natural deterioration rate and its recovery rate, and the de-
+                                                                                                                        𝛽
+                                                                                     terioration rate is calculated by 𝛾𝑖 for node 𝑖. The results are compared
+                                                                                                                         𝑖
+                                                                                     with those of the DCCVRPMRS and presented in Table 5. The results
+                                                                                     indicate that the DCCVRPMRS, which comprehensively considers the
+                                                                                     initial damage and deterioration rates, is more eﬀective at reducing the
+                                                                                     cumulative loss. The strategy prioritizing the highest deterioration rate
+                                                                                     also yields acceptable results, with a “Gap” of only approximately 1%,
+                                                                                     outperforming the strategy focused on the highest initial damage. Given
+                                                                                     the dynamic characteristics of the damage suﬀered by each node, high
+                                                                                     deterioration rates pose a greater threat to disaster nodes. Taking the
+                                                                                     initial damage as the most important criterion for optimizing the deliv-
+                                                                                     ery sequence is not desirable. Although the strategy of prioritizing the
+                                                                                     highest deterioration rate has advantages, comprehensively considering
+                                                                                     both factors remains the best solution.
+
+                                                                                     5.5. Analyses of the cluster characteristics of damage and deterioration
+
+                                                                                         In post-disaster situations, particularly after earthquakes, disaster
+                                                                                     nodes often exhibit clustering characteristics and are typically repre-
+                                                                                     sented as epicenter cities and aﬀected cities. The area with the clustered
+                                                                                     nodes can be taken as a city, and each node is a subpart of the city. We
+                                                                                     generate instances with cluster characteristics of damage and deteriora-
+                                                                                     tion from the basic C101 instance, which features clustered geograph-
+                                                                                     ical data. We deﬁne the initial damage and the natural deterioration
+                                                                                     rate for each node with a step size of 𝛿, and the damage degree is asso-
+                                                                                     ciated with 𝛿. The distributions of disaster nodes with diﬀerent 𝛿 values
+                                                                                     (𝛿 = 1 or 𝛿 = 2) are shown in Figs. 9(a) and 10(a). The number next
+                                                                                     to a node represents its damage degree, where the initial damage and
+                                                                                     the natural deterioration rates are within the range of [0.1(𝛿 − 1), 0.1𝛿].
+                                                                                     The delivery routes produced for 𝛿 = 1 are shown in Fig. 9(c), and we
+                                                                                     compare the routes with those obtained in the scenario for the objective
+                                                                                     of minimizing the travel distance shown in Fig. 9(b). The delivery plan
+                                                                                     tends to deliver relief supplies in clusters, thereby reducing the travel
+                                                                                     distance if the objective of optimization is the shortest travel distance.
+                                                                                     However, in humanitarian relief cases, the travel distance or cost is in-
+    Fig. 11. The delivery routes for disaster nodes with clustered loss cost.        signiﬁcant compared with the losses suﬀered by cities and their people.
+                                                                                     Therefore, in the DCCVRPMRS, vehicles tend to prefer decentralized de-
+                                                                                     livery, where each vehicle selects a small number of nodes for delivery,
+the CVRP model (to minimize the travel distance), and the CCVRP                      and the set of nodes selected for each vehicle includes nodes with high
+(to minimize the cumulative waiting time). “Gap%” is calculated by                   and moderate degrees of damage. Nodes with high degrees of damage
+𝐿𝑖 −𝐿0
+  𝐿
+       ⋅ 100%, where 𝐿𝑖 is the node loss or road loss for the CVRP or                are served ﬁrst, followed by moderate nodes. All transport resources are
+    0
+CCVRP, respectively, and where 𝐿0 is the node loss or road loss for the              mobilized to carry out the relief supply delivery task as quickly as possi-
+DCCVRPMRS.                                                                           ble. Similarly, the delivery pattern still exists if 𝛿 increases, as shown in
+   The comparison results show that the DCCVRPMRS can achieve the                    Fig. 10. When 𝛿 = 2, the delivery process is still decentralized, and each
+minimal node loss in each instance. This indicates that minimizing the               vehicle prioritizes deliveries to nodes with high degrees of damage. This
+cumulative loss allows valuable relief supplies to be utilized eﬀectively,           delivery pattern does not change signiﬁcantly with increasing 𝛿 (the dif-
+thereby better aligning with the ultimate objective of humanitarian re-              ference between the damage degrees of two clusters). Compared with
+
+                                                                                14
+X. Zhao et al.                                                                                                        Expert Systems With Applications 314 (2026) 131644
+
+
+a single vehicle serving a single cluster, this multi-vehicle delivery pat-            [1 + 4𝜂, 1 + 7𝜂], particularly the 1 + 7𝜂 cluster), but the priority service
+tern allows nodes with high degrees of damage to receive relief supplies               rate for clusters with the highest unit loss costs signiﬁcantly increases.
+ﬁrst, preventing rapid deterioration.                                                  This is because disaster nodes with higher unit loss costs suﬀer more
+     We also investigate the priority service rate for disaster nodes with             severe casualties and economic losses, thereby increasing their service
+varying degrees of damage, and the results are shown in Table 6. We                    priority levels, even if these clusters are geographically distant from the
+assume that there are 𝑀 clusters (𝑀 = 1, 2, … , 𝑚, … , |𝑀|) with diﬀer-                cluster concentration area. Consequently, the prioritization of relief sup-
+ent damage degrees. Table 6 records the priority service rates of the                  ply deliveries cannot rely solely on damage degrees but must integrate
+nodes from cluster 𝑚 that are ﬁrst served by each vehicle. Interestingly,              additional factors such as unit loss costs, i.e., potential casualties and
+the nodes with the highest degrees of damage are not those with the                    economic losses. However, even when unit loss costs are considered,
+highest priority service rates. Priority service is provided to the clusters           delivering relief supplies to distant nodes at the expense of proximate
+with damage degrees within the range of [1 + 4𝛿, 1 + 7𝛿]. Among them,                  nodes remains impractical, which explains why the clusters with the
+clusters with damage degrees of 1 + 7𝛿 have the highest priority service               highest unit loss costs do not receive the highest priority service rate.
+rate. In contrast, the clusters with the highest damage degrees of 1 + 8𝛿
+and 1 + 9𝛿 are not. Although node 𝑖1 , which has the highest degree of                 6. Conclusions and future work
+damage, should have priority for relief supplies, if the vehicle passes
+by another node 𝑖2 that has a high degree of damage but one that is                        Post-disaster humanitarian relief is vital for reducing casualties and
+slightly lower than the highest degree and skips it or moves far from                  economic losses. This paper focuses on post-earthquake scenarios, where
+it, it would increase the unnecessary waiting time for 𝑖2 , leading to its             each disaster node has a unique initial degree of damage, natural dete-
+rapid deterioration, which does not align with the original humanitarian               rioration rate, and recovery rate. A nonlinear function is proposed to
+rescue philosophy. As illustrated in Fig. 9(a), clusters with damage de-               represent the temporal variation exhibited by the loss at each node. Un-
+gree of 1 + 8𝛿 and 1 + 9𝛿 are far away from the nodes with concentrated                like the classic VRP or CCVRP, the DCCVRPMRS quantiﬁes route per-
+clusters. This will result in a signiﬁcant increase in unnecessary waiting             formance based on the cumulative loss incurred at disaster nodes and
+time for a large number of nodes with severe damage, particularly after                is formulated as an MINP model. It considers the heterogeneity of mul-
+prioritizing service to multiple nodes from 1 + 8𝛿 and 1 + 9𝛿 clusters,                tiple alternative roads between two nodes, each of which is character-
+causing more nodes to deteriorate rapidly and increasing cumulative                    ized by its initial degree of damage, natural deterioration rate, and re-
+loss. Therefore, the delivery of relief supplies to the clusters with the              covery rate. A nonlinear function is also introduced to characterize the
+highest damage degree should be appropriately delayed if they are far                  change exhibited by the road loss over time, similar to the loss varia-
+away from the nodes with the concentrated clusters with high damage                    tions observed at disaster nodes. The travel speed on each road is deter-
+degree, which is distinct from the commonly held belief that nodes in                  mined by its degree of damage. An optimal road selection process is cru-
+the most severe damage should receive relief supplies ﬁrst. This strategy              cial for achieving timely delivery and minimizing the cumulative loss,
+also applies to 𝛿 = 2. Certainly, nodes in clusters with slight damage will            thus satisfying the practical requirements of post-disaster relief. The DC-
+not be the ﬁrst to receive relief supplies, which is consistent with our               CVRPMRS is an NP-hard problem and an extension of the CCVRP. The
+common sense.                                                                          losses at disaster nodes vary nonlinearly over time, leading to the devel-
+                                                                                       opment of a nonlinear integer programming model for the DCCVRPMRS.
+5.6. Analyses of the cluster characteristics of the unit loss cost                     Based on this, we propose an IHGA that integrates population initializa-
+                                                                                       tion, crossover, a local search for transport routes, and a local search
+    In addition to the cluster characteristics of the damage and deterio-              for road selection to rapidly determine transportation routes for relief
+ration rates, casualties and economic losses are also presented as cluster             supplies and minimize the cumulative loss. We apply a 𝑘-means genera-
+characteristics in an actual disaster scenario. These factors are collec-              tion scheme that considers the initial damage degrees and deterioration
+tively abstracted into a uniﬁed metric termed the “unit loss cost” in our              rates, and combine it with random generation to ensure priority for se-
+study. We investigate the impact of the cluster characteristic of the unit             vere disaster nodes and maintain high population diversity. Crossover
+loss cost on the delivery process. For the large disaster nodes compris-               retains the high-quality routes derived from parents, whereas the local
+ing several cities, the losses caused by the disaster vary from city to city.          search, which is enhanced by a VND procedure and an adaptive strat-
+Some cities are sparsely populated, so even if they suﬀer severe dam-                  egy with heuristic operations, focuses on optimizing both delivery routes
+age, excessive casualties, building destruction, or economic losses will               and the road selection process. We develop several instances based on
+not occur. The unit loss cost for such nodes is relatively low. However,               the Solomon benchmark for our experiments. A basic experiment is ﬁrst
+in some megacities with rapid development and dense populations, the                   conducted to present the delivery process employed for disaster nodes
+casualties and property losses are enormous, even for those with slight                with multi-road selection. We compare our IHGA with two metaheuris-
+damage, resulting in high unit loss costs. We assume that each cluster                 tic algorithms and validate that IHGA outperforms both methods. Addi-
+has its own unit loss cost but with a random initial damage degree and                 tionally, we evaluate the DCCVRPMRS against two classic models: one
+a random deterioration rate (the same as those in Section 5.2). The step               minimizing the travel distance and the other minimizing the cumula-
+size 𝜂 of the unit loss cost between clusters is set to 𝜂 = 1, 2, 5 separately.        tive waiting time at disaster nodes. The results indicate that minimizing
+Fig. 11 presents the delivery routes on diﬀerent 𝜂. In the hypothetical                the cumulative loss in dynamic and heterogeneous disaster scenarios
+scenario, vehicles still prefer decentralized delivery rather than in a clus-          signiﬁcantly reduces the cumulative loss suﬀered by disaster nodes and
+ter, with each vehicle serving a single node in a cluster, indicating that             the selected roads, thereby increasing the eﬃciency and safety of deliv-
+prioritizing the relief supplies delivery for clusters with high unit loss             ery. Furthermore, the delivery priorities of the initial damage degrees
+costs remains the optimal delivery strategy if the unit loss costs are clus-           and deterioration rates in terms of reducing the overall loss are also ex-
+tered.                                                                                 amined separately. The ﬁndings reveal that prioritizing the nodes with
+    Table 7 represents the priority service rate for nodes derived from                the highest deterioration rates signiﬁcantly reduces the loss relative to
+clusters with diﬀerent unit loss costs. The delivery scheme that mini-                 that induced when focusing solely on the initial damage. However, our
+mizes the travel distance will provide priority service to each cluster                proposed model, which integrates both factors, proves to be more rea-
+equally. Consistent with the widely accepted view, clusters with very                  sonable and eﬀective.
+slight damage are not prioritized for service or are rarely prioritized, es-               We also investigate the delivery process clustered by the initial
+pecially as 𝜂 increases. In contrast with the results observed for the clus-           damage degrees and deterioration rates, as well as those clustered by
+ter characteristic of damage and deterioration rates, the highest priority             unit loss costs. This approach is more appropriate for real-world post-
+service rate occurs in clusters with medium–to-high unit loss costs (e.g.,             earthquake scenarios. An interesting observation is that the cluster with
+
+                                                                                  15
+X. Zhao et al.                                                                                                                          Expert Systems With Applications 314 (2026) 131644
+
+
+the highest initial damage degrees and deterioration rates, as well as that                      Allahviranloo, M., Chow, J. Y. J., & Recker, W. W. (2014). Selective vehicle routing prob-
+with the highest unit loss costs, does not necessarily receive the high-                             lems under uncertainty without recourse. Transportation Research Part E: Logistics and
+                                                                                                     Transportation Review, 62, 68–88.
+est service priority. Because they may be geographically distant from                            Bruni, M. E., Khodaparasti, S., & Beraldi, P. (2020). The selective minimum latency prob-
+the concentrated cluster nodes, prioritizing deliveries to these clusters                            lem under travel time variability: An application to post-disaster assessment opera-
+would accelerate the damage suﬀered by clusters near the depot or those                              tions. Omega, 92, 102154.
+                                                                                                 Chai, R., He, H., Liu, D., & Chen, J. (2024). A fuzzy multi-objective programming model for
+concentrated with relatively slight (but still severe) damage. The strat-                            the delivery and distribution of humanitarian relief materials. Engineering Applications
+egy of prioritizing disaster relief deliveries to distant nodes at the ex-                           of Artiﬁcial Intelligence, 137, 109113.
+pense of nearby nodes, even when the distant damage is slightly greater,                         Chang, K.-H., Chiang, Y.-C., & Chang, T.-Y. (2024). Simultaneous location and vehicle
+                                                                                                     ﬂeet sizing of relief goods distribution centers and vehicle routing for post-disaster
+increases the overall loss. This contradicts the traditional experience of                           logistics. Computers & Operations Research, 161, 106404.
+exclusively focusing on the most serious disaster nodes. Therefore, un-                          Chern, C.-C., Chen, Y. L., & Kung, L.-C. (2010). A heuristic relief transportation planning
+der limited resources and uneven disaster damage, the optimal delivery                               algorithm for emergency supply chain management. International Journal of Computer
+                                                                                                     Mathematics, 87(7), 1638–1664.
+strategy should consider (1) the actual initial damage degree and deteri-
+                                                                                                 Cotes, N., & Cantillo, V. (2019). Including deprivation costs in facility location models for
+oration rate of each area, (2) the spatial concentration degrees of disas-                           humanitarian relief logistics. Socio-Economic Planning Sciences, 65, 89–100.
+ter clusters, and (3) transportation distances. This multi-factor decision                       Damião, C. M., Silva, J. M. P., & Uchoa, E. (2023). A branch-cut-and-price algorithm for
+framework enables the scientiﬁc allocation of resources, minimizing the                              the cumulative capacitated vehicle routing problem. 4OR, 21(1), 47–71.
+                                                                                                 Farahani, R. Z., Lotﬁ, M. M., Baghaian, A., Ruiz, R., & Rezapour, S. (2020). Mass casualty
+total post-disaster loss.                                                                            management in disaster scene: A systematic review of OR&MS research in humanitar-
+    This investigation of the DCCVRPMRS has several limitations,                                     ian operations. European Journal of Operational Research, 287(3), 787–819.
+prompting future work from four perspectives. First, a practical post-                           Farzaneh, M. A., Rezapour, S., Baghaian, A., & Amini, M. H. (2023). An integrative frame-
+                                                                                                     work for coordination of damage assessment, road restoration, and relief distribution
+disaster data collection approach is necessary to validate the proposed                              in disasters. Omega, 115, 102748.
+model and algorithm. The eﬀectiveness of the proposed method will                                Gao, X., Nayeem, M. K., & Hezam, I. M. (2019). A robust two-stage transit-based evacua-
+subsequently be evaluated through real-world implementation. Then,                                   tion model for large-scale disaster response. Measurement, 145, 713–723.
+                                                                                                 Gralla, E., Goentzel, J., & Fine, C. (2014). Assessing trade-oﬀs among multiple objectives
+an unmanned delivery scheme for disaster relief, including unmanned                                  for humanitarian aid delivery using expert preferences. Production and Operations Man-
+device control, charging management, task allocation, and route plan-                                agement, 23(6), 978–989.
+ning, is becoming essential. Additionally, in emergency delivery oper-                           Gutjahr, W. J., & Fischer, S. (2018). Equity and deprivation costs in humanitarian logistics.
+                                                                                                     European Journal of Operational Research, 270(1), 185–197.
+ations, unforeseen incidents–such as sudden road collapses or vehicle
+                                                                                                 Hamdi, I. (2024). Solving the cumulative capacitated vehicle routing problem with drones.
+breakdowns–introduce signiﬁcant uncertainties. These stochastic fac-                                 Journal of Industrial and Production Engineering, 41(4), 344–361.
+tors substantially increase the complexity of both modeling and solving                          Holguín-Veras, J., Jaller, M., Van Wassenhove, L. N., Pérez, N., & Wachtendorf, T. (2012).
+                                                                                                     On the unique features of post-disaster humanitarian logistics. Journal of Operations
+the associated operational problems, presenting a challenge well worth
+                                                                                                     Management, 30(7–8), 494–506.
+tackling. Ultimately, developing eﬃcient and accurate algorithms will                            Huang, G., Qi, Y., Cai, Y., Luo, Y., & Huang, H. (2024). A grey wolf optimizer algorithm for
+continue to be a key focus of future research. More eﬀective heuris-                                 multi-objective cumulative capacitated vehicle routing problem considering operation
+tic operations for optimizing delivery routes and constructing improved                              time. Biomimetics, 9(6), 331.
+                                                                                                 Huang, M., Smilowitz, K., & Balcik, B. (2012). Models for relief routing: Equity, eﬃciency
+algorithmic structures are needed to attain increased computational ef-                              and eﬃcacy. Transportation Research Part E: Logistics and Transportation Review, 48(1),
+ﬁciency and accuracy.                                                                                2–18.
+                                                                                                 Jiao, L., Peng, Z., Guo, M., Ding, S., & Cui, J. (2025). Location routing problem with
+                                                                                                     interdependent mobile depot operations for post-disaster relief. Expert Systems with
+CRediT authorship contribution statement                                                             Applications, 286, 128037.
+                                                                                                 Ke, L. (2018). A brain storm optimization approach for the cumulative capacitated vehicle
+                                                                                                     routing problem. Memetic Computing, 10(4), 411–421.
+    Xuan Zhao: Conceptualization, Methodology, Validation, Writing –                             Khorsi, M., Chaharsooghi, S. K., Kashan, A. H., & Bozorgi-Amiri, A. (2022). Solving the
+original draft, Writing – review & editing, Investigation, Formal anal-                              humanitarian multi-trip cumulative capacitated routing problem via a grouping meta-
+ysis; Qingguo Bai: Investigation, Validation, Funding acquisition, Su-                               heuristic algorithm. Annals of Operations Research, 319, 173–210.
+                                                                                                 Kyriakakis, N. A., Marinaki, M., & Marinakis, Y. (2021). A hybrid ant colony optimization-
+pervision, Resources; Jie Wei: Conceptualization, Methodology, Valida-                               variable neighborhood descent approach for the cumulative capacitated vehicle rout-
+tion, Writing – original draft, Writing – review & editing, Investigation,                           ing problem. Computers & Operations Research, 134, 105397.
+Project administration, Data curation, Visualization; Bingnan Yang: Su-                          Kyriakakis, N. A., Marinaki, M., Matsatsinis, N., & Marinakis, Y. (2022a). A cumulative
+                                                                                                     unmanned aerial vehicle routing problem approach for humanitarian coverage path
+pervision, Validation.
+                                                                                                     planning. European Journal of Operational Research, 300(3), 992–1004.
+                                                                                                 Kyriakakis, N. A., Sevastopoulos, I., Marinaki, M., & Marinakis, Y. (2022b). A hybrid tabu
+Data availability                                                                                    search - variable neighborhood descent algorithm for the cumulative capacitated ve-
+                                                                                                     hicle routing problem with time windows in humanitarian applications. Computers &
+                                                                                                     Industrial Engineering, 164, 107868.
+    The data are available on the website provided in the article.                               Lee, S. J., & Kim, B. S. (2024). Vehicle routing and scheduling problem with order accep-
+                                                                                                     tance for pharmaceutical refrigerated logistics. Applied Soft Computing, 164, 111983.
+                                                                                                 Li, S., & Teo, K. L. (2019). Post-disaster multi-period road network repair: Work scheduling
+Declaration of competing interest                                                                    and relief logistics optimization. Annals of Operations Research, 283(1–2), 1345–1385.
+                                                                                                 Liu, H., Sun, Y., Pan, N., Li, Y., An, Y., & Pan, D. (2022). Study on the optimization of urban
+                                                                                                     emergency supplies distribution paths for epidemic outbreaks. Computers & Operations
+    The authors declare that they have no known competing ﬁnancial                                   Research, 146, 105912.
+interests or personal relationships that could have appeared to inﬂuence                         Lysgaard, J., & Wøhlk, S. (2014). A branch-and-cut-and-price algorithm for the cumulative
+the work reported in this paper.                                                                     capacitated vehicle routing problem. European Journal of Operational Research, 236(3),
+                                                                                                     800–810.
+                                                                                                 Mattos Ribeiro, G., & Laporte, G. (2012). An adaptive large neighborhood search heuris-
+Acknowledgement                                                                                      tic for the cumulative capacitated vehicle routing problem. Computers & Operations
+                                                                                                     Research, 39(3), 728–735.
+                                                                                                 Maya Duque, P. A., Dolinskaya, I. S., & Sörensen, K. (2016). Network repair crew schedul-
+   This research was supported by the National Natural Science Foun-                                 ing and routing for emergency relief distribution problem. European Journal of Opera-
+dation of China (grant number 72271141).                                                             tional Research, 248(1), 272-285.
+                                                                                                 Ngueveu, S. U., Prins, C., & Calvo, R. W. (2010). An eﬀective memetic algorithm for
+                                                                                                     the cumulative capacitated vehicle routing problem. Computers & Operations Research,
+References                                                                                           37(11), 1877–1885.
+                                                                                                 Nucamendi-Guillén, S., Angel-Bello, F., Martínez-Salazar, I., & Cordero-Franco, A. E.
+Ajam, M., Akbari, V., & Salman, F. S. (2022). Routing multiple work teams to minimize                (2018). The cumulative capacitated vehicle routing problem: New formulations and
+   latency in post-disaster road network restoration. European Journal of Operational Re-            iterated greedy algorithms. Expert Systems with Applications, 113, 315–327.
+   search, 300(1), 237–254.                                                                      Oksuz, M. K., & Satoglu, S. I. (2020). A two-stage stochastic model for location planning of
+Akbari, V., & Shiri, D. (2022). An online optimization approach for post-disaster relief             temporary medical centers for disaster response. International Journal of Disaster Risk
+   distribution with online blocked edges. Computers & Operations Research, 137, 105533.             Reduction, 44, 101426.
+
+
+                                                                                            16
+X. Zhao et al.                                                                                                                             Expert Systems With Applications 314 (2026) 131644
+
+
+Oruc, B. E., & Kara, B. Y. (2018). Post-disaster assessment routing problem. Transportation           Sze, J. F., Salhi, S., & Wassan, N. (2017). The cumulative capacitated vehicle routing
+   Research Part B: Methodological, 116, 76–102.                                                          problem with min-sum and min-max objectives: An eﬀective hybridisation of adap-
+Parappathodi, J., & Archetti, C. (2022). Crowdsourced humanitarian relief vehicle routing                 tive variable neighbourhood search and large neighbourhood search. Transportation
+   problem. Computers & Operations Research, 148, 105963.                                                 Research Part B: Methodological, 101, 162–184.
+Penna, P. H. V., Santos, A. C., & Prins, C. (2018). Vehicle routing problems for last mile            Tlili, T., Masri, H., & Krichen, S. (2022). Towards an eﬃcient collection and transport of
+   distribution after major disaster. Journal of the Operational Research Society, 69(8),                 COVID-19 diagnostic specimens using genetic-based algorithms. Applied Soft Comput-
+   1254–1268.                                                                                             ing, 116, 108264.
+Pratap, S., & Aziz, H. A. (2025). Uncertainty-cognizant post-disaster routing with progres-           Toﬁghi, S., Torabi, S. A., & Mansouri, S. A. (2016). Humanitarian logistics network design
+   sive hedging centered multi meta-heuristic approach. Transportation Research Part E:                   under mixed uncertainty. European Journal of Operational Research, 250(1), 239–250.
+   Logistics and Transportation Review, 201, 104215.                                                  Van Steenbergen, R. M., Van Heeswijk, W. J. A., & Mes, M. R. K. (2025). The stochastic dy-
+Rivera, J. C., Murat Afsar, H., & Prins, C. (2016). Mathematical formulations and exact                   namic postdisaster inventory allocation problem with trucks and UAVs. Transportation
+   algorithm for the multitrip cumulative capacitated single-vehicle routing problem. Eu-                 Science, 59(2), 360–390.
+   ropean Journal of Operational Research, 249(1), 93–104.                                            Vasalakis, S., & Spyridakos, A. (2025). Memetic algorithms and dynamic programming on
+Sadeghi, A., Aros-Vera, F., Mosadegh, H., & YounesSinaki, R. (2023). Social cost-vehicle                  vehicle routing problems in crisis situations. Operational Research, 25(1), 8.
+   routing problem and its application to the delivery of water in post-disaster humani-              Wang, H., Du, L., & Ma, S. (2014). Multi-objective open location-routing model with split
+   tarian logistics. Transportation Research Part E: Logistics and Transportation Review, 176,            delivery for optimized relief distribution in post-earthquake. Transportation Research
+   103189.                                                                                                Part E: Logistics and Transportation Review, 69, 160–179.
+Sanci, E., & Daskin, M. S. (2019). Integrating location and network restoration decisions             Weng, X., She, W., Fan, H., Zhang, J., & Yun, L. (2025). Multi-depot vehicle routing prob-
+   in relief networks under uncertainty. European Journal of Operational Research, 279(2),                lem with drones in emergency logistics. Cluster Computing, 28(1), 64.
+   335-350.                                                                                           Yang, Z., Guo, L., & Yang, Z. (2019). Emergency logistics for wildﬁre suppression based
+Shiri, D., Akbari, V., & Tozan, H. (2023). Online optimisation for ambulance routing in                   on forecasted disaster evolution. Annals of Operations Research, 283(1), 917–937.
+   disaster response with partial or no information on victim conditions. Computers &                 Zheng, Q., Zhang, Y., Tian, H., & He, L. (2024). A cooperative adaptive genetic algorithm
+   Operations Research, 159, 106314.                                                                      for reentrant hybrid ﬂow shop scheduling with sequence-dependent setup time and
+Singh, A., & Majumder, S. (2024). Solution of maximum scatter traveling salesman prob-                    limited buﬀers. Complex & Intelligent Systems, 10(1), 781–809.
+   lem through evolutionary approaches. Applied Soft Computing, 163, 111858.                          Zou, Y., Hao, J.-K., & Wu, Q. (2024). A two-individual evolutionary algorithm for cumu-
+Smiti, N., Dhiaf, M. M., Jarboui, B., & Hanaﬁ, S. (2020). Skewed general variable neigh-                  lative capacitated vehicle routing with single and multiple depots. IEEE Transactions
+   borhood search for the cumulative capacitated vehicle routing problem. International                   on Evolutionary Computation, 29(2), 505–518.
+   Transactions in Operational Research, 27(1), 651–664.
+
+
+
+
+                                                                                                 17
+
