@@ -9,7 +9,15 @@ import pandas as pd
 
 
 def latest(results_dir: Path, pattern: str) -> Path | None:
-    files = sorted(results_dir.glob(pattern), key=lambda p: p.stat().st_mtime)
+    files = sorted(
+        [
+            p
+            for p in results_dir.glob(pattern)
+            if "pair" not in p.stem.lower()
+            and not p.stem.endswith("_summary")
+        ],
+        key=lambda p: p.stat().st_mtime,
+    )
     return files[-1] if files else None
 
 
@@ -242,7 +250,12 @@ def main() -> None:
     ]
     for pattern, fn in jobs:
         candidates = sorted(
-            [p for p in results_dir.glob(pattern) if not p.stem.endswith("_summary")],
+            [
+                p
+                for p in results_dir.glob(pattern)
+                if "pair" not in p.stem.lower()
+                and not p.stem.endswith("_summary")
+            ],
             key=lambda p: p.stat().st_mtime,
         )
         if not candidates:
