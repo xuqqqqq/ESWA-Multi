@@ -60,7 +60,7 @@ if ~isempty(repeatFilter)
 end
 
 availableProfiles = {'base_hga','no_damage_critical','no_period_relocate','no_route_structure','full'};
-availableLabels = {'Base HGA','w/o damage-critical','w/o period relocation','w/o route restructuring','MP-IHGA'};
+availableLabels = {'Base HGA','w/o damage-critical','w/o period relocation','w/o route restructuring','IHGA'};
 if strcmp(modeKey, 'pressure')
     defaultProfiles = {'base_hga','no_period_relocate','full'};
 else
@@ -230,11 +230,11 @@ for p = 1:numel(profiles)
 end
 
 fprintf(fid, '\n## Manuscript-Ready Interpretation\n\n');
-fprintf(fid, 'The ablation results show that the full MP-IHGA consistently achieves the lowest or near-lowest dynamic damage across the representative C, R, and RC layouts. ');
+fprintf(fid, 'The ablation results show that the full IHGA achieves the lowest or near-lowest dynamic damage across the representative C, R, and RC layouts. ');
 fprintf(fid, 'Removing the damage-critical operators increases the objective because high-loss late nodes are no longer explicitly moved forward. ');
 fprintf(fid, 'Removing the period-relocation operator weakens cross-period adjustment under staged inventory availability. ');
 fprintf(fid, 'Removing route restructuring mainly affects the ability to exploit additional vehicles and repair fragmented route patterns. ');
-fprintf(fid, 'Therefore, the performance gain of MP-IHGA is not caused by a single parameter setting, but by the combination of multi-period, damage-critical, and route-structure-aware search components.\n');
+fprintf(fid, 'Therefore, the performance gain of IHGA is not caused by a single parameter setting, but by the combination of multi-period, damage-critical, and route-structure-aware search components.\n');
 end
 
 function writeRows(rows, headers, outputFile)

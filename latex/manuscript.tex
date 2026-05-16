@@ -46,15 +46,15 @@
             country={}}
 
 \begin{abstract}
-Timely emergency material delivery is difficult when affected demand nodes and transportation links both evolve over time. A route that is short in distance may still generate large rescue losses if high-urgency nodes are served late or if vehicles traverse severely damaged roads. This paper studies a multi-period vehicle routing problem with dynamic node-road damage, where rescue vehicles and relief inventories are released in repeated dispatch periods rather than being fully available at the beginning of the horizon. This period structure is operationally important because single-period aggregation can overestimate early rescue capacity and underestimate dynamic loss. Node damage is modeled as an arrival-time-dependent recovery-deterioration process, and road damage affects vehicle speed and downstream arrival times. To solve the problem, we develop an improved hybrid genetic algorithm (IHGA) that embeds damage-critical, period-aware, and route-structure-aware repair moves into a population-based HGA framework. Experiments on Solomon-type C, R, and RC instances show that IHGA consistently obtains lower dynamic damage than Omega-VNS and ESWA-IMA. On C101-25, r101-25, and rc101-25, IHGA reduces average dynamic damage by 1.31\%, 2.22\%, and 2.30\% relative to IMA, and by 7.07\%, 8.32\%, and 6.78\% relative to VNS. Ablation results further show that the proposed repair operators improve average damage on C, R, and RC layouts. Model-comparison experiments further show that the damage-oriented model reduces dynamic damage by 13.10\%--20.28\% relative to a cumulative-arrival-time-oriented CCVRP baseline and by 19.33\%--26.63\% relative to a distance-oriented CVRP baseline. Multi-period sensitivity experiments further show that an aggregated single-period model gives an optimistic lower-bound estimate because it assumes all vehicles and supplies are available at time zero. Under staged dispatch, the same total resources cause higher dynamic damage as vehicles and inventories are released in later waves. These results demonstrate the value of explicitly modeling dynamic damage and staged multi-period dispatch in emergency routing decisions.
+Emergency material delivery after an earthquake is affected not only by routing distance, but also by time-dependent damage at demand nodes, damaged roads, and the timing at which rescue resources become available. This paper extends dynamic damage routing to a multi-period setting in which vehicles and relief inventories are released in dispatch waves rather than being fully available at time zero. The resulting multi-period dynamic damage vehicle routing problem (MP-DDVRP) couples route sequencing, road selection, period assignment, and cumulative period-inventory feasibility. To solve the problem, we develop an improved hybrid genetic algorithm (IHGA) that retains the dynamic node-road damage evaluation framework and adds damage-critical and period-aware repair moves for staged dispatch. On representative C, R, and RC instances, IHGA achieves lower mean dynamic damage than ESWA-IMA and Omega-VNS in the tested paired runs, with average reductions of 1.19\% and 6.69\%, respectively. The ablation results indicate that damage-critical repair provides the main improvement over the base HGA, while period-aware and route-structure moves mainly support feasibility and robustness in staged dispatch. Sensitivity experiments show that a single-period aggregate model gives an optimistic lower-bound estimate because it assumes that all vehicles and supplies can be used immediately. Under fixed total resources, staged multi-period release increases dynamic damage when early-period vehicle and inventory availability is diluted, highlighting the importance of modeling resource timing in post-earthquake routing decisions.
 \end{abstract}
 
 \begin{highlights}
-\item A multi-period emergency routing model captures staged vehicle dispatch and period inventory release.
-\item IHGA uses urgency-aware construction with damage-critical, period-aware, and route-structure repair.
-\item Damage-oriented routing outperforms VNS, IMA, CVRP, and CCVRP baselines on C, R, and RC instances.
-\item Ablation isolates the contribution of damage-critical and period-aware repair operators.
-\item Sensitivity results quantify optimistic aggregation bias, period splitting, vehicle supply, and inventory thresholds.
+\item MP-DDVRP models staged vehicle dispatch, period inventory, and dynamic node-road damage.
+\item IHGA adds damage-critical and period-aware repair to a dynamic-damage HGA framework.
+\item Paired tests indicate lower mean dynamic damage than VNS and IMA on representative C/R/RC cases.
+\item Ablation identifies damage-critical repair as the main algorithmic improvement over Base HGA.
+\item Sensitivity results quantify optimistic aggregation bias and early-resource dilution in multi-period dispatch.
 \end{highlights}
 
 \begin{keyword}
@@ -76,11 +76,30 @@ The main challenge is that the objective is not a static sum of arc distances. T
 
 The contributions of this paper are summarized as follows.
 \begin{itemize}
-\item We formulate a multi-period routing model in which staged vehicle dispatch, period inventory, dynamic node damage, and dynamic road damage jointly determine rescue loss.
-    \item We design an improved hybrid genetic algorithm (IHGA) with urgency-aware initialization, damage-critical relocation/exchange, period relocation, and route-structure repair operators.
-\item We introduce damage-critical relocation and exchange operators together with period-aware relocation, diversity refresh, and warm-start transfer, so that high-loss nodes can be moved to earlier feasible periods and resource-sensitivity curves remain stable.
-    \item We conduct algorithm comparison, model comparison, sensitivity analysis, and node-priority analysis on C, R, and RC benchmark instances to validate both solution quality and decision-support interpretation.
+\item We formulate MP-DDVRP, a multi-period extension of dynamic damage routing in which staged vehicle dispatch, period inventory, dynamic node damage, and dynamic road damage jointly determine rescue loss.
+\item We design IHGA for MP-DDVRP by combining route-based genetic search with damage-critical repair, period-aware relocation, and route-structure adjustment under cumulative inventory feasibility.
+\item We evaluate the model and algorithm through algorithm comparison, operator ablation, objective-proxy comparison, multi-period resource sensitivity, and node-priority analysis on representative and external C/R/RC instances.
 \end{itemize}
+
+Table~\ref{tab:relation-original} summarizes the relationship between this study and the original DCCVRPMRS model of \citet{zhao2026routing}. The present work inherits the dynamic node-road damage and multi-road selection setting, but changes the resource-availability assumption from a single dispatch horizon to staged multi-period release.
+
+\begin{table}[H]
+\centering
+\caption{Relationship with the original DCCVRPMRS study.}
+\label{tab:relation-original}
+\scriptsize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
+\toprule
+Aspect & Original DCCVRPMRS \citep{zhao2026routing} & This study \\
+\midrule
+Damage representation & Dynamic node and road damage with multi-road selection. & Retains dynamic node-road damage and multi-road selection. \\
+Resource timing & Vehicles and supplies are treated within a single dispatch horizon. & Vehicles and inventories are released over multiple dispatch periods. \\
+Key feasibility condition & Vehicle capacity and route feasibility. & Vehicle capacity plus cumulative period-inventory feasibility. \\
+Algorithmic focus & Route-similarity crossover and route/road local search. & Damage-critical and period-aware repair under staged dispatch. \\
+Decision insight & Priority among damaged nodes and road alternatives. & Bias of single-period aggregation and value of modeling resource timing. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \section{Literature review}
 \label{sec:literature}
@@ -98,7 +117,7 @@ This paper is positioned at the intersection of multi-period routing and time-de
 
 Let $G=(N_0,A)$ be a complete directed graph, where $N=\{1,\ldots,n\}$ is the set of affected demand nodes and node $0$ denotes the depot. The planning horizon is divided into $P$ dispatch periods. Period $p$ starts at $T_p=(p-1)\Delta$, where $\Delta$ is the period-length parameter. In the reported experiments, $\Delta=1440/P$, corresponding to a normalized one-day planning horizon measured in minutes. In each period $p\in\{1,\ldots,P\}$, at most $K$ rescue vehicles can be used. Each vehicle has capacity $Q$, and the available period inventory is $B_p$. In the implementation used in the experiments, $B_p$ is set adaptively according to total demand and the number of periods.
 
-The solution determines the assignment of every demand node to exactly one vehicle route, the service sequence within each route, the dispatch period of each route, and the road alternative selected for each traversed arc. Demand splitting is not allowed: once a node is assigned to a route, the vehicle delivers the full demand of that node.
+The solution determines the assignment of every demand node to exactly one vehicle route, the service sequence within each route, the dispatch period of each route, and the road alternative selected for each traversed arc. Demand splitting is not allowed: once a node is assigned to a route, the vehicle delivers the full demand of that node. We refer to this staged dynamic-damage routing extension as MP-DDVRP.
 
 Each demand node $i\in N$ has demand $q_i$, service time $s_i$, initial damage $a_i$, deterioration rate $b_i$, and recovery rate $\rho_i$. If node $i$ is served at arrival time $A_i$, its remaining damage is evaluated as
 \begin{equation}
@@ -209,7 +228,7 @@ Vehicle-number sensitivity analysis should reflect a basic monotonicity property
 \subsection{Experimental design}
 \label{subsec:experimental-design}
 
-The experiments are designed to evaluate both optimization quality and decision-support interpretability. Five groups of experiments are reported, as summarized in Table~\ref{tab:experiment-plan}. The first group compares IHGA with Omega-VNS and ESWA-IMA under the same dynamic-damage objective. The second group isolates the contribution of the proposed repair components through ablation. The third group compares the proposed damage-oriented model with distance-oriented CVRP and cumulative-arrival-time-oriented CCVRP baselines. The fourth group is centered on multi-period resource planning: it analyzes how vehicle number, dispatch-period splitting, and period inventory change dynamic damage. The fifth group examines whether high-urgency nodes are actually served earlier.
+The experiments are designed to evaluate both optimization quality and decision-support interpretability. Five groups of experiments are reported, as summarized in Table~\ref{tab:experiment-plan}. The first group compares IHGA with Omega-VNS and ESWA-IMA under the same dynamic-damage objective. The second group isolates the contribution of the proposed repair components through ablation. The third group compares MP-DDVRP with constructive routes generated by distance-oriented CVRP and cumulative-arrival-time-oriented CCVRP proxy objectives. The fourth group is centered on multi-period resource planning: it analyzes how vehicle number, dispatch-period splitting, and period inventory change dynamic damage. The fifth group examines whether high-urgency nodes are actually served earlier.
 
 \begin{table}[H]
 \centering
@@ -221,8 +240,8 @@ The experiments are designed to evaluate both optimization quality and decision-
 No. & Experiment & Purpose & Output metrics \\
 \midrule
 E1 & Algorithm comparison & Compare IHGA with Omega-VNS and ESWA-IMA under the same data, constraints, and dynamic objective. & Best, average, standard deviation \\
-E2 & Operator ablation & Remove the main repair components from MP-IHGA to isolate their contributions. & Average damage, best damage, loss increase \\
-E3 & Model comparison & Compare the proposed DDVRP-IHGA model with multi-period CVRP and CCVRP baselines. & Dynamic damage, relative improvement \\
+E2 & Operator ablation & Remove the main repair components from IHGA to isolate their contributions. & Average damage, best damage, loss increase \\
+E3 & Objective-proxy comparison & Compare MP-DDVRP with constructive multi-period CVRP and CCVRP proxy routes. & Dynamic damage, relative difference \\
 E4 & Multi-period resource sensitivity & Analyze vehicle number, optimistic single-period aggregation, staged dispatch periods, and period inventory on C, R, and RC instances. & Objective, marginal benefit, aggregation bias, period-splitting effect \\
 E5 & Node-priority analysis & Divide nodes into urgency groups and test whether high-urgency nodes are served earlier. & Arrival time, node damage, service rank \\
 \bottomrule
@@ -231,7 +250,7 @@ E5 & Node-priority analysis & Divide nodes into urgency groups and test whether 
 
 Unless otherwise stated, the experiments use three Solomon-type benchmark data sets with 100 demand nodes and one depot: C101-25 (clustered), r101-25 (random), and rc101-25 (mixed random-clustered). The default number of planning periods is $P=3$, vehicle capacity is 200, and the base period inventory is $Q_p=\lceil\sum_i q_i/P\rceil$, giving 604, 486, and 575 units for C101-25, r101-25, and rc101-25, respectively. Reported averages use paired independent seeds within each experiment group. The analysis focuses on solution quality and planning interpretation rather than computing-time comparison.
 
-Following the benchmark organization used in the original DCCVRPMRS study \citep{zhao2026routing}, instance expansion is applied to the comparison experiments rather than to every sensitivity experiment. The original study expands the algorithm-comparison, objective-comparison, and heuristic-priority tables across multiple benchmark instances and scales, while using representative scenario experiments for the cluster and sensitivity analyses. A data check showed that same-family Solomon labels such as C101, C102, and C103 are not independent after conversion to the present DDVRP input format because the implementation uses coordinates, demand, service time, and road matrices, but not the original ready-time and due-time-window fields. Therefore, these labels are not used as independent extended evidence. For E1, E2, and the priority-strategy comparison, we instead import three spatially distinct 200-customer Gehring--Homberger benchmark instances from the SINTEF TOP VRPTW archive and truncate each to the first 100 customers, producing HC1-100, HR1-100, and HRC1-100 \citep{gehring2001parallel,sintefTopVrptw}. Vehicle-number, inventory, and period-splitting sensitivities remain on the three representative C/R/RC instances because their purpose is to explain mechanisms rather than to produce another broad benchmark table.
+Following the benchmark organization used in the original DCCVRPMRS study \citep{zhao2026routing}, instance expansion is applied to the comparison experiments rather than to every sensitivity experiment. The original study expands the algorithm-comparison, objective-comparison, and heuristic-priority tables across multiple benchmark instances and scales, while using representative scenario experiments for cluster and sensitivity analyses. A data check showed that same-family Solomon labels such as C101, C102, and C103 are not independent after conversion to the present MP-DDVRP input format because the implementation uses coordinates, demand, service time, and road matrices, but not the original ready-time and due-time-window fields. Therefore, these labels are not used as independent extended evidence. For E1, E2, and the priority-strategy comparison, we instead import three spatially distinct 200-customer Gehring--Homberger benchmark instances from the SINTEF TOP VRPTW archive and truncate each to the first 100 customers, producing HC1-100, HR1-100, and HRC1-100 \citep{gehring2001parallel,sintefTopVrptw}. Vehicle-number, inventory, and period-splitting sensitivities remain on the three representative C/R/RC instances because their purpose is to explain mechanisms rather than to produce another broad benchmark table.
 
 \subsection{Algorithm comparison}
 \label{subsec:algorithm-comparison}
@@ -249,20 +268,35 @@ Instance & Algorithm & Avg. damage & Best damage & Std. \\
 \midrule
 C101-25 & VNS  & 397.213 & 377.995 & 19.103 \\
 C101-25 & IMA  & 374.021 & 371.477 & 3.376  \\
-C101-25 & IHGA & 369.125 & 369.032 & 0.099  \\
+C101-25 & IHGA & 371.894 & 369.296 & 3.240  \\
 \midrule
 r101-25 & VNS  & 395.675 & 381.408 & 11.040 \\
 r101-25 & IMA  & 370.985 & 368.095 & 2.528  \\
-r101-25 & IHGA & 362.760 & 362.236 & 0.353  \\
+r101-25 & IHGA & 366.584 & 364.189 & 1.551  \\
 \midrule
 rc101-25 & VNS  & 403.145 & 394.454 & 9.763 \\
 rc101-25 & IMA  & 384.654 & 382.678 & 2.275 \\
-rc101-25 & IHGA & 375.806 & 375.253 & 0.554 \\
+rc101-25 & IHGA & 377.631 & 375.834 & 2.016 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:algorithm-comparison} shows that IHGA obtains the lowest average damage on all three instances. The average reduction is 1.94\% relative to IMA and 7.39\% relative to VNS. This is expected because IMA is already a strong memetic baseline and shares several generic local-improvement ideas with IHGA. The contribution of IHGA is therefore not an order-of-magnitude gap on a weak baseline, but a stable reduction of damage after adding operators that explicitly target late high-loss nodes, period assignment, and high-fleet route fragmentation. The small standard deviation of IHGA indicates that these operators improve robustness rather than producing only occasional good runs.
+Table~\ref{tab:algorithm-comparison} shows that IHGA achieves the lowest mean damage on all three representative instances under the adopted paired paper-level result set. The average reduction is 1.19\% relative to IMA and 6.69\% relative to VNS. The gap relative to IMA is intentionally interpreted conservatively because IMA is already a strong memetic baseline and shares generic local-improvement ideas with IHGA. The result indicates that the proposed damage-critical and period-aware repair moves provide incremental but useful improvement under the same dynamic-damage evaluator.
+
+\begin{table}[H]
+\centering
+\caption{Paired diagnostic checks for IHGA relative to IMA.}
+\label{tab:algorithm-statistical-check}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Instance & Paired runs & Mean damage reduction & 95\% bootstrap CI & Sign-randomization $p$ \\
+\midrule
+\input{generated_statistical_test_rows}
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:algorithm-statistical-check} reports a paired diagnostic check against IMA, where positive differences mean lower damage for IHGA. Since each instance has five paired runs, the exact sign-randomization $p$-values are coarse and are used as diagnostic evidence rather than as a strong significance claim. The paired differences are positive for all runs on r101-25 and rc101-25, and for three of five runs on C101-25. Against VNS, all paired differences are positive on the three representative instances.
 
 \begin{figure}[H]
 \centering
@@ -271,7 +305,7 @@ Table~\ref{tab:algorithm-comparison} shows that IHGA obtains the lowest average 
 \label{fig:algorithm-convergence}
 \end{figure}
 
-Figure~\ref{fig:algorithm-convergence} reports the averaged best-so-far traces from the paper-lite convergence run. The curves should be interpreted as solution-quality evidence rather than as a computing-time comparison. On all three representative instance types, IHGA reaches a lower damage plateau than ESWA-IMA and Omega-VNS, which is consistent with the final statistics in Table~\ref{tab:algorithm-comparison}. The separation is especially useful for this study because it appears under clustered, random, and mixed customer layouts, suggesting that the proposed damage-critical and period-aware operators are not tuned only to one spatial pattern.
+Figure~\ref{fig:algorithm-convergence} reports averaged best-so-far traces from a convergence run. The curves should be interpreted as solution-quality evidence rather than as a computing-time comparison. On the representative instance types, IHGA reaches a lower damage plateau than ESWA-IMA and Omega-VNS, which is consistent with the final statistics in Table~\ref{tab:algorithm-comparison}. The separation across clustered, random, and mixed customer layouts suggests that the proposed repair moves are not tuned only to one spatial pattern.
 
 \begin{table}[H]
 \centering
@@ -297,41 +331,41 @@ HRC1-100 & IHGA & 404.766 & 404.678 & 0.150 \\
 \end{tabular}
 \end{table}
 
-The external robustness check in Table~\ref{tab:algorithm-comparison-extended} follows the role of the larger comparison table in the original paper, but avoids treating time-window-only Solomon variants as independent spatial cases. IHGA obtains the lowest average damage on all three Homberger-derived C/R/RC instances. Across these runs, the average reduction is 2.96\% relative to IMA and 8.12\% relative to VNS. The minimum reduction is still positive on every external instance, indicating that the proposed operators remain useful outside the original three representative Solomon-type inputs.
+The external robustness check in Table~\ref{tab:algorithm-comparison-extended} follows the role of the larger comparison table in the original paper, but avoids treating time-window-only Solomon variants as independent spatial cases. IHGA obtains the lowest average damage on all three Homberger-derived C/R/RC instances. Across these runs, the average reduction is 2.96\% relative to IMA and 8.12\% relative to VNS. The minimum reduction is positive on every external instance, suggesting that the proposed repair moves remain useful outside the original three representative Solomon-type inputs.
 
 \subsection{Algorithm ablation}
 \label{subsec:operator-ablation}
 
-The algorithm comparison shows that the proposed IHGA improves over the adapted IMA and VNS baselines, but this does not by itself identify which components are responsible for the gain. We therefore run an ablation study that keeps the same encoding and dynamic-damage evaluator, while selectively disabling the proposed repair components. The ``Base HGA'' variant removes the proposed damage-critical, period-aware, high-fleet, route-merge, route-rebuild, and polishing components. To keep the comparison paired, all variants use the same random seeds within each instance and repetition. Table~\ref{tab:operator-ablation} reports independent paired runs on the representative C/R/RC instances.
+The algorithm comparison shows that the proposed IHGA improves over the adapted IMA and VNS baselines, but this does not by itself identify which components are responsible for the gain. We therefore run an ablation study that keeps the same encoding and dynamic-damage evaluator, while selectively disabling the proposed repair components. The ``Base HGA'' variant removes the proposed damage-critical, period-aware, high-fleet, route-merge, route-rebuild, and polishing components. To keep the comparison paired, all variants use the same random seeds within each instance and repetition. Table~\ref{tab:operator-ablation} reports paired diagnostic runs on the representative C/R/RC instances.
 
 \begin{table}[H]
 \centering
-\caption{Ablation study of the proposed MP-IHGA search framework.}
+\caption{Ablation study of the proposed IHGA search framework.}
 \label{tab:operator-ablation}
 \scriptsize
 \begin{tabular}{llrrrr}
 \toprule
-Instance & Variant & Avg. damage & Best damage & Std. & Change vs MP-IHGA \\
+Instance & Variant & Avg. damage & Best damage & Std. & Change vs IHGA \\
 \midrule
 \input{generated_ablation_rows}
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:operator-ablation} is intended to answer a different question from Table~\ref{tab:algorithm-comparison}. Instead of asking whether MP-IHGA beats external baselines, it asks which proposed repair components are responsible for the improvement. The stripped Base HGA is clearly worse than the full method, showing that generic population search alone is insufficient. Damage-critical moves, period relocation, and route restructuring each contribute differently across clustered, random, and mixed layouts, which supports the interpretation that the final performance comes from combining multi-period and damage-aware search components rather than from a single parameter setting.
+Table~\ref{tab:operator-ablation} is intended to answer a different question from Table~\ref{tab:algorithm-comparison}. Instead of asking whether IHGA beats external baselines, it asks which repair components are responsible for the improvement over a stripped HGA. The Base HGA variant is clearly worse than the full method, showing that generic population search alone is insufficient. Removing damage-critical repair also increases damage on all representative layouts, indicating that moving late high-loss nodes is the main algorithmic contribution. The effects of period relocation and route restructuring are smaller and partly instance-dependent; they are therefore interpreted as feasibility and robustness support for staged dispatch rather than as uniformly dominant improvement sources.
 
-\subsection{Model comparison with CVRP and CCVRP}
+\subsection{Objective-proxy comparison with CVRP and CCVRP}
 \label{subsec:model-comparison}
 
-To test whether dynamic damage must be modeled explicitly, we compare DDVRP-IHGA with two simplified multi-period baselines. The CVRP baseline minimizes total travel distance under the same capacity and period settings. The CCVRP baseline minimizes cumulative arrival time. After solving each baseline, the resulting routes are re-evaluated by the dynamic damage objective in Eq.~\eqref{eq:objective}. Table~\ref{tab:model-comparison} reports the resulting dynamic damage values and the improvement obtained by the proposed model.
+To test whether dynamic damage must be modeled explicitly, we compare MP-DDVRP with two constructive multi-period objective-proxy baselines. The CVRP proxy constructs routes by prioritizing short travel distance under the same capacity and period settings. The CCVRP proxy prioritizes cumulative arrival time. After constructing each proxy route plan, the resulting routes are re-evaluated by the dynamic damage objective in Eq.~\eqref{eq:objective}. Table~\ref{tab:model-comparison} reports the resulting dynamic damage values and the relative difference obtained by optimizing the dynamic-damage objective with IHGA. These comparisons should be read as objective-proxy evidence, not as a claim that CVRP or CCVRP has been solved to the same metaheuristic depth as MP-DDVRP.
 
 \begin{table}[H]
 \centering
-\caption{Model comparison against distance-oriented CVRP and cumulative-arrival-time-oriented CCVRP.}
+\caption{Objective-proxy comparison against distance-oriented CVRP and cumulative-arrival-time-oriented CCVRP.}
 \label{tab:model-comparison}
 \small
 \begin{tabular}{lrrrrr}
 \toprule
-Instance & DDVRP-IHGA & CCVRP & CVRP & Improve vs CCVRP & Improve vs CVRP \\
+Instance & MP-DDVRP & CCVRP proxy & CVRP proxy & Difference vs CCVRP & Difference vs CVRP \\
 \midrule
 C101-25  & 369.037 & 462.896 & 494.251 & 20.28\% & 25.33\% \\
 r101-25  & 362.770 & 429.711 & 494.436 & 15.58\% & 26.63\% \\
@@ -340,7 +374,7 @@ rc101-25 & 376.785 & 433.590 & 467.039 & 13.10\% & 19.33\% \\
 \end{tabular}
 \end{table}
 
-The results show that minimizing distance or cumulative arrival time is not sufficient for dynamic-damage reduction. CVRP is designed to shorten travel distance, and CCVRP is designed to reduce aggregate arrival time, but neither objective directly accounts for heterogeneous node vulnerability or road-damage-induced speed changes. The proposed damage-oriented model therefore produces lower dynamic damage on all three instance classes.
+The results suggest that minimizing distance or cumulative arrival time alone is not sufficient for dynamic-damage reduction. CVRP is designed to shorten travel distance, and CCVRP is designed to reduce aggregate arrival time, but neither objective directly accounts for heterogeneous node vulnerability or road-damage-induced speed changes. Under these constructive proxy settings, the MP-DDVRP route plans have lower dynamic damage on all three instance classes.
 
 \begin{table}[H]
 \centering
@@ -349,7 +383,7 @@ The results show that minimizing distance or cumulative arrival time is not suff
 \small
 \begin{tabular}{lrrrrr}
 \toprule
-Instance & DDVRP-IHGA & CCVRP & CVRP & Improve vs CCVRP & Improve vs CVRP \\
+Instance & MP-DDVRP & CCVRP proxy & CVRP proxy & Difference vs CCVRP & Difference vs CVRP \\
 \midrule
 HC1-100 & 411.226 & 473.638 & 490.976 & 13.18\% & 16.24\% \\
 HR1-100 & 414.910 & 468.294 & 475.631 & 11.40\% & 12.77\% \\
@@ -358,7 +392,7 @@ HRC1-100 & 404.695 & 443.222 & 478.549 & 8.69\% & 15.43\% \\
 \end{tabular}
 \end{table}
 
-The same conclusion holds in the external model-comparison table. DDVRP-IHGA produces lower dynamic damage than both simplified objectives on all reported external checks, with average reductions of 11.09\% relative to CCVRP and 14.81\% relative to CVRP. This supports the central modeling claim: shortest-distance and earliest-arrival objectives can be useful operational proxies, but they do not directly optimize the dynamic damage that the emergency decision maker ultimately seeks to reduce.
+The same pattern holds in the external objective-proxy table. MP-DDVRP produces lower dynamic damage than both simplified proxy objectives on all reported external checks, with average reductions of 11.09\% relative to CCVRP and 14.81\% relative to CVRP. This supports the central modeling claim in a conservative sense: shortest-distance and earliest-arrival objectives can be useful operational proxies, but they do not directly optimize the dynamic damage that the emergency decision maker ultimately seeks to reduce.
 
 \subsection{Vehicle-number sensitivity analysis}
 \label{subsec:vehicle-sensitivity}
@@ -497,7 +531,7 @@ After the feasibility threshold is reached, additional inventory produces limite
 \subsection{Priority analysis}
 \label{subsec:priority-analysis}
 
-The original DCCVRPMRS benchmark also compares the proposed model with heuristic delivery strategies that strictly prioritize either the highest initial damage or the highest deterioration rate. To provide the corresponding evidence, we construct two priority-only baselines under the same vehicle-capacity and period-inventory constraints. In each baseline, nodes are sorted by the selected priority indicator and assigned to the earliest feasible route, and the resulting routes are then evaluated by the same dynamic-damage objective. Table~\ref{tab:priority-strategy} reports the comparison on the same Homberger-derived external set used in Tables~\ref{tab:algorithm-comparison-extended} and \ref{tab:model-comparison-extended}.
+The original DCCVRPMRS benchmark also compares the proposed model with heuristic delivery strategies that strictly prioritize either the highest initial damage or the highest deterioration rate. To provide the corresponding evidence, we construct two priority-only baselines under the same vehicle-capacity and period-inventory constraints. In each baseline, nodes are sorted by the selected priority indicator and assigned to the earliest feasible route, and the resulting routes are then evaluated by the same dynamic-damage objective. Table~\ref{tab:priority-strategy} reports a single-seed external diagnostic comparison on the same Homberger-derived set used in Tables~\ref{tab:algorithm-comparison-extended} and \ref{tab:model-comparison-extended}.
 
 \begin{table}[H]
 \centering
@@ -507,7 +541,7 @@ The original DCCVRPMRS benchmark also compares the proposed model with heuristic
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lrrrrr}
 \toprule
-Instance & DDVRP-IHGA & Initial-damage priority & Deterioration priority & Improve vs initial & Improve vs deterioration \\
+Instance & MP-DDVRP & Initial-damage priority & Deterioration priority & Difference vs initial & Difference vs deterioration \\
 \midrule
 HC1-100 & 411.557 & 473.858 & 488.270 & 13.15\% & 15.71\% \\
 HR1-100 & 415.201 & 465.707 & 487.061 & 10.85\% & 14.75\% \\
@@ -517,7 +551,7 @@ HRC1-100 & 404.766 & 464.157 & 485.060 & 12.80\% & 16.55\% \\
 }
 \end{table}
 
-IHGA outperforms both priority-only strategies on all reported external entries, with average reductions of 12.26\% relative to the initial-damage priority rule and 15.67\% relative to the deterioration-rate priority rule. This result supports the same qualitative conclusion as the original priority-strategy experiment: considering one urgency factor alone is not enough. The route plan must balance initial damage, deterioration, travel delay, road condition, vehicle capacity, and period-level inventory timing.
+The MP-DDVRP route plans have lower dynamic damage than both priority-only strategies on all reported external entries, with average reductions of 12.26\% relative to the initial-damage priority rule and 15.67\% relative to the deterioration-rate priority rule. Because this external priority check uses one seed per instance, it is treated as qualitative diagnostic evidence. It supports the same interpretation as the original priority-strategy experiment: considering one urgency factor alone is not enough. The route plan must balance initial damage, deterioration, travel delay, road condition, vehicle capacity, and period-level inventory timing.
 
 The second priority analysis divides nodes into low, medium, and high groups according to the integrated urgency score used by IHGA. Table~\ref{tab:priority-analysis} reports average arrival time, average service rank, and average node damage for the three groups. A lower service rank indicates earlier service.
 
@@ -544,9 +578,9 @@ High-urgency nodes are served much earlier than low-urgency nodes on all three i
 \section{Conclusion}
 \label{sec:conclusion}
 
-This paper studies a multi-period vehicle routing problem with dynamic node-road damage for emergency material delivery. The model captures three key features of post-disaster routing: node losses depend on arrival time, road damage affects travel speed and downstream service times, and vehicles and inventories are released through dispatch periods rather than being fully available at the beginning of the horizon. An improved hybrid genetic algorithm is developed to solve the problem. In addition to standard genetic and local-search components, IHGA uses urgency-aware construction, route-similarity crossover, damage-critical relocation and exchange, period-aware relocation, high-fleet parallel relocation, route merging, route rebuilding, and warm-start transfer.
+This paper studies MP-DDVRP, a multi-period extension of dynamic node-road damage routing for emergency material delivery. The model captures three post-disaster routing features: node losses depend on arrival time, road damage affects travel speed and downstream service times, and vehicles and inventories are released through dispatch periods rather than being fully available at the beginning of the horizon. IHGA is developed to solve the problem by combining route-based genetic search with damage-critical repair, period-aware relocation, and route-structure adjustment.
 
-Computational experiments on C101-25, r101-25, and rc101-25 demonstrate the effectiveness and interpretability of the proposed method. IHGA consistently obtains lower average dynamic damage than Omega-VNS and ESWA-IMA. External checks on Homberger-derived 100-customer C/R/RC instances further show that this advantage is not limited to the three representative instances. The ablation study shows that the improvement is not only due to generic genetic search: the stripped Base HGA is clearly worse than the full method, and the proposed repair components contribute to damage reduction across representative layouts. The damage-oriented model also outperforms distance-oriented CVRP and cumulative-arrival-time-oriented CCVRP baselines, confirming that distance or arrival time alone is not a sufficient proxy for emergency loss. The multi-period sensitivity results show that total resource quantity and resource timing are not interchangeable. The aggregate single-period baseline gives an optimistic lower bound, while staged dispatch produces additional dynamic damage when the same total fleet and total supply become available through later waves. Inventory experiments show a complementary threshold effect: severe under-supply creates infeasible penalty-dominated solutions, whereas additional inventory beyond the feasible threshold yields only limited marginal improvement. Priority experiments further show that one-factor priority rules are inferior to the integrated dynamic-damage objective, while the urgency-group analysis verifies that high-urgency nodes are served substantially earlier than low-urgency nodes.
+Computational experiments on C101-25, r101-25, and rc101-25 indicate that IHGA achieves lower mean dynamic damage than Omega-VNS and ESWA-IMA in the tested paired settings. External checks on Homberger-derived 100-customer C/R/RC instances show the same mean-damage pattern. The ablation study suggests that the main algorithmic gain comes from damage-critical repair, while period-aware and route-structure moves provide smaller and instance-dependent support for staged dispatch. Objective-proxy comparisons indicate that distance- or arrival-time-oriented constructive routes can be worse when evaluated by dynamic damage. The multi-period sensitivity results show that total resource quantity and resource timing are not interchangeable: the aggregate single-period baseline gives an optimistic lower bound, while staged dispatch produces additional dynamic damage when the same total fleet and total supply become available through later waves. Inventory experiments show a complementary threshold effect: severe under-supply creates infeasible penalty-dominated solutions, whereas additional inventory beyond the feasible threshold yields only limited marginal improvement. Priority experiments further suggest that one-factor priority rules are inferior to an integrated dynamic-damage evaluation, while the urgency-group analysis shows that high-urgency nodes are served substantially earlier than low-urgency nodes.
 
 Future work can extend the current deterministic setting to stochastic demand, uncertain road recovery, and rolling-horizon dispatch with real-time information updates. Larger benchmark instances and richer disaster-network data can also be used to further test scalability and operational realism.
 

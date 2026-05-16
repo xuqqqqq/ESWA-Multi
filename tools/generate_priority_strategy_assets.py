@@ -99,7 +99,15 @@ def main() -> None:
         part = wide[wide["caseName"].isin(cases)]
         if part.empty:
             continue
-        row = part.iloc[0]
+        row = part[
+            [
+                "DDVRP_IHGA",
+                "PriorityInitial",
+                "PriorityDeterioration",
+                "improve_vs_initial_pct",
+                "improve_vs_deterioration_pct",
+            ]
+        ].mean(numeric_only=True)
         rows.append(
             f"{label} & {row['DDVRP_IHGA']:.3f} & {row['PriorityInitial']:.3f} & "
             f"{row['PriorityDeterioration']:.3f} & {row['improve_vs_initial_pct']:.2f}\\% & "
