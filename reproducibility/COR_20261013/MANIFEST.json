@@ -1,0 +1,550 @@
+{
+    "schema_version":  1,
+    "snapshot":  "COR_20261013",
+    "upstream_base":  "1cb0056c043ca96a2af8a5925cc9325ec9b1d39f",
+    "frozen_source":  "PDR_HGA_COR_repro_v3_synced",
+    "fresh_solver_inputs_included":  false,
+    "license_added":  false,
+    "files":  [
+                  {
+                      "path":  ".gitattributes",
+                      "bytes":  8,
+                      "sha256":  "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da"
+                  },
+                  {
+                      "path":  ".gitignore",
+                      "bytes":  75,
+                      "sha256":  "87ed1bb444497d1624b23302cc9aa5a3fa9f723bdab39b8ef63bf4770f42f8a5"
+                  },
+                  {
+                      "path":  "analysis/analyze_controlled_resources_old_v2.py",
+                      "bytes":  7137,
+                      "sha256":  "bccc6a9abf54d5acc6cdf5d9f276709f6efff7fdd9e4667694bb939d4ec59bd3"
+                  },
+                  {
+                      "path":  "analysis/analyze_frozen_external_comparison.py",
+                      "bytes":  3873,
+                      "sha256":  "7fc988221eb181f492a89bdd797829cd451e94d223cc3576562b78350ee20474"
+                  },
+                  {
+                      "path":  "analysis/analyze_node_correlations_old_v2.py",
+                      "bytes":  5409,
+                      "sha256":  "f6a53bce7934e51aeac53cf5487e983078315d72b1ea10a5265c139dac1d2e00"
+                  },
+                  {
+                      "path":  "analysis/analyze_old_v2_combined_ablation.py",
+                      "bytes":  11005,
+                      "sha256":  "c4ebbcc43c9db129540522cc3e018d5ab17862a4165155434d14070131d77176"
+                  },
+                  {
+                      "path":  "analysis/analyze_old_v2_main_comparison.py",
+                      "bytes":  7746,
+                      "sha256":  "55e9feeae8725cac70ca6906a257950721479f92ecb152066b65f6c2c84d8829"
+                  },
+                  {
+                      "path":  "analysis/analyze_shared_framework_models.py",
+                      "bytes":  6817,
+                      "sha256":  "ee89afdb00b3b8173f1b040bca0b942497062342d611e576e6684f97004264b5"
+                  },
+                  {
+                      "path":  "analysis/merge_convergence_20run.py",
+                      "bytes":  3298,
+                      "sha256":  "ef05e21e24e0a3616d1ff2fb2f96e3acf0c287cb1173951b145c48cfef1e5ecc"
+                  },
+                  {
+                      "path":  "analysis/plot_style.py",
+                      "bytes":  2491,
+                      "sha256":  "fce2d462d9ac9f526bedec19f27c1517b442e3040d27139ad225bc4272e0e826"
+                  },
+                  {
+                      "path":  "DATA_DICTIONARY.md",
+                      "bytes":  3433,
+                      "sha256":  "a4849c0336fd22f8dd41963b5e4d277c58c20dc9eb83d769f506ec09ef427967"
+                  },
+                  {
+                      "path":  "evidence/ablation_old_v2_combined_10run_authoritative.csv",
+                      "bytes":  31517,
+                      "sha256":  "ebebaa90bfb42b3646e001478bbe7d60c35afb38cb6fe86d16a798cc2572e348"
+                  },
+                  {
+                      "path":  "evidence/ablation_old_v2_combined_10run_interactions.csv",
+                      "bytes":  337,
+                      "sha256":  "6612aeb9d16fde8cd7a806b57018f661430905c7494b745f85d0d092677fe9f4"
+                  },
+                  {
+                      "path":  "evidence/ablation_old_v2_combined_10run_marginal_stats.csv",
+                      "bytes":  833,
+                      "sha256":  "8deec84ed7f7f92c38e073fc5702e29aa1a25e170d8d5c53869d3400cc6702e7"
+                  },
+                  {
+                      "path":  "evidence/ablation_old_v2_combined_10run_paired_stats.csv",
+                      "bytes":  1433,
+                      "sha256":  "f7e1edef5a741627dbfa4db089d25945470521fd32d292009bc949b644afd248"
+                  },
+                  {
+                      "path":  "evidence/ablation_old_v2_combined_10run_summary.csv",
+                      "bytes":  1444,
+                      "sha256":  "2ee38b2705e5c2a8cef3ac0c6b7fc76dd65726064e2851f5cdb6c1d11802188a"
+                  },
+                  {
+                      "path":  "evidence/algorithm_comparison_old_v2_20run_authoritative.csv",
+                      "bytes":  41046,
+                      "sha256":  "d4c01b8795ed25729aaa5f69de0374d3182966a48ccfc66610b491b9a8c18aff"
+                  },
+                  {
+                      "path":  "evidence/algorithm_comparison_old_v2_20run_paired_stats.csv",
+                      "bytes":  1139,
+                      "sha256":  "697884d54ac83456c21ebfd86c599697cf4c272cfbe75f3ca39cb2a7375600b1"
+                  },
+                  {
+                      "path":  "evidence/algorithm_comparison_old_v2_20run_summary.csv",
+                      "bytes":  683,
+                      "sha256":  "5c304d08c5c12ce5826b61fad2f2259736be5a5805b97fd0ecc9fa8423e92422"
+                  },
+                  {
+                      "path":  "evidence/controlled_period_old_v2_summary.csv",
+                      "bytes":  1722,
+                      "sha256":  "86df7e46db8dd45ae3fb9e374326c8cdfdf1eaea75a3a059580b86d1a47316b7"
+                  },
+                  {
+                      "path":  "evidence/controlled_release_old_v2_summary.csv",
+                      "bytes":  1070,
+                      "sha256":  "56e32e689dc9c148260c240e61d1ea4c8133fe2f3009225b830a534e18cefe20"
+                  },
+                  {
+                      "path":  "evidence/controlled_resources_old_v2_authoritative.csv",
+                      "bytes":  27483,
+                      "sha256":  "d5addfaa9b5f994b0509c27f3a2662abe846a11da50fa0a45c908c42dcdf6862"
+                  },
+                  {
+                      "path":  "evidence/convergence_old_v2_20run_authoritative.csv",
+                      "bytes":  2362281,
+                      "sha256":  "7b590c7749c6ef96da39d258ad9d85b1026f0d235c4ad08c9fb03849237e5fd1"
+                  },
+                  {
+                      "path":  "evidence/frozen_external_comparison_authoritative.csv",
+                      "bytes":  5346,
+                      "sha256":  "29a705ae7ffc8f9133376560555288c8309f5acf709c2ba6222cbaadb64a7886"
+                  },
+                  {
+                      "path":  "evidence/frozen_external_comparison_summary.csv",
+                      "bytes":  671,
+                      "sha256":  "1596cebde48819ee6e275d89023288452545c1f9844f42458f9fe51c314c22fc"
+                  },
+                  {
+                      "path":  "evidence/node_correlation_old_v2_seed_level.csv",
+                      "bytes":  7507,
+                      "sha256":  "9c69ac49569885e5c5b9de25a381e30193127464c8d36e6c18ab9869deeb1f66"
+                  },
+                  {
+                      "path":  "evidence/node_correlation_old_v2_summary.csv",
+                      "bytes":  1540,
+                      "sha256":  "7f29658b7b0b75a93ba6b99e7c4250f429a854eadcef88881a65f70a414a7832"
+                  },
+                  {
+                      "path":  "evidence/shared_framework_model_authoritative.csv",
+                      "bytes":  22896,
+                      "sha256":  "109ef4a341df777d1236b03a1b9c66a4687d85c59a42e87546ab0e140da5b008"
+                  },
+                  {
+                      "path":  "evidence/shared_framework_model_summary.csv",
+                      "bytes":  804,
+                      "sha256":  "11d88c8d8eacc1b4634a09c8ee0de268d9f8f291764233fc7418a2a39b5239f3"
+                  },
+                  {
+                      "path":  "EXPERIMENT_CONFIGS.json",
+                      "bytes":  88606,
+                      "sha256":  "f2b8f11fef9339eceea1ae57b192a35f5c254ca0c4920de16cc31b276b834c6b"
+                  },
+                  {
+                      "path":  "INPUTS.md",
+                      "bytes":  3445,
+                      "sha256":  "24300c259f7721ca8b7d00f099702c2d83eb3cfc09a12c7d2914cc8a34c081db"
+                  },
+                  {
+                      "path":  "matlab/calArrivalTime.m",
+                      "bytes":  1645,
+                      "sha256":  "6d17d62ec0e41d1d718f1b10d2a426359d036d2fba0ac7b67e77e60c3cce862e"
+                  },
+                  {
+                      "path":  "matlab/crossover.m",
+                      "bytes":  2153,
+                      "sha256":  "9dd54d5be81878557cdb736c837f22c87c51fab10b55a3ff8dc600f9e31e2463"
+                  },
+                  {
+                      "path":  "matlab/DamageCriticalExchange.m",
+                      "bytes":  4946,
+                      "sha256":  "c26b664d670b8c32e4669d77529c4519f559bbf44cab2adbd345355a188b5292"
+                  },
+                  {
+                      "path":  "matlab/DamageCriticalRelocate.m",
+                      "bytes":  5745,
+                      "sha256":  "d308be1afe9a6bbdf04d9d73962c198ed327738a513a7131e71dc1eb4f1ac543"
+                  },
+                  {
+                      "path":  "matlab/DRate.m",
+                      "bytes":  1187,
+                      "sha256":  "966bf33e3be49d9d47307190c1248625c71c2d089b5694ed769c239af53595d2"
+                  },
+                  {
+                      "path":  "matlab/Dt.m",
+                      "bytes":  540,
+                      "sha256":  "e85f91b3d8429d4dfe666e938738812f0a2825450df5a8dcc54605aef78a57f9"
+                  },
+                  {
+                      "path":  "matlab/Exchange.m",
+                      "bytes":  3561,
+                      "sha256":  "fb4dd2c05f4bc3cfd5671744b59879e283aaac132c73492c3e1a3cc30311f146"
+                  },
+                  {
+                      "path":  "matlab/GreedySelection.m",
+                      "bytes":  3063,
+                      "sha256":  "0d3e2c29e6b39e918764936044c5ed185be15c7c4b08cebb337721d7664daa7d"
+                  },
+                  {
+                      "path":  "matlab/initialObjective.m",
+                      "bytes":  490,
+                      "sha256":  "fb9806efa02810866baed4198e67fd2707c1002c6292def83caa7b0df300bedb"
+                  },
+                  {
+                      "path":  "matlab/initialPopulationIMAStyle.m",
+                      "bytes":  2552,
+                      "sha256":  "92b99da4569c9e9d3ce9611c12f3376a9b1faefa8ca9cc1017d20946883a36b0"
+                  },
+                  {
+                      "path":  "matlab/initialPopulationRandom.m",
+                      "bytes":  2175,
+                      "sha256":  "20a49c6dcce64b3833b837d06f1f49b740284f7da91539645870a82d92e3f088"
+                  },
+                  {
+                      "path":  "matlab/initialPopulationV2.m",
+                      "bytes":  5413,
+                      "sha256":  "5656d0b9fc4476f42b48012a2bc2c7ab0d9ff393b5ad7199224751325aeb4b10"
+                  },
+                  {
+                      "path":  "matlab/Insert.m",
+                      "bytes":  3164,
+                      "sha256":  "a15afa11f34c315485c735d297712820b46ff665f54f9ea5e20cca4374e1b3ac"
+                  },
+                  {
+                      "path":  "matlab/objectiveK.m",
+                      "bytes":  3320,
+                      "sha256":  "8c63f89a95fc1fdff6c934a1a090c7d48940199d62e6e382dce984f0792e97a6"
+                  },
+                  {
+                      "path":  "matlab/objectiveKDistance.m",
+                      "bytes":  2346,
+                      "sha256":  "bf4366dbcd9b9899c0f2376891f1fa5bbbc4aba4b14a7a612228d64100e09325"
+                  },
+                  {
+                      "path":  "matlab/Opt.m",
+                      "bytes":  1713,
+                      "sha256":  "2ddf8b6309b90df0e9ef025dd636dba3b074823c48193f4a8c433f71172abc37"
+                  },
+                  {
+                      "path":  "matlab/OrOpt.m",
+                      "bytes":  1155,
+                      "sha256":  "7ed9470adb41aa44162fa60a421ece4207c27a1cc5e849617075aef57019d283"
+                  },
+                  {
+                      "path":  "matlab/ParallelRelocate.m",
+                      "bytes":  3645,
+                      "sha256":  "f0ef76098e651b650b2a25e74a6bb669023c12cbdee9ec33efb0dbcdab5af314"
+                  },
+                  {
+                      "path":  "matlab/PeriodRelocate.m",
+                      "bytes":  3454,
+                      "sha256":  "3ffa5b50d9b0f2c027aa5c545aa4bc1c8d9e78ff9b43f0d4e335393220dc1b3b"
+                  },
+                  {
+                      "path":  "matlab/RandomlySelection.m",
+                      "bytes":  2148,
+                      "sha256":  "7c1cc86e555a754cb119a60abf31e803332709f67584f5262c1257c262e5a8db"
+                  },
+                  {
+                      "path":  "matlab/Relocate.m",
+                      "bytes":  2567,
+                      "sha256":  "c8fc238a1db7276b94f77ca2216a8c0070e2df40cc067dc74cbb75377da65061"
+                  },
+                  {
+                      "path":  "matlab/roadDamage.m",
+                      "bytes":  1338,
+                      "sha256":  "0ed50540a1d4e469058b87a6b71d740aff1047fa9ab0b5c2bf4295c9613f84c5"
+                  },
+                  {
+                      "path":  "matlab/RouteMerge.m",
+                      "bytes":  3586,
+                      "sha256":  "8f06f8f6734508214a0472624688dda844cdb90bb096126b86b34c9dcf8d31c9"
+                  },
+                  {
+                      "path":  "matlab/RouteRebuild.m",
+                      "bytes":  2425,
+                      "sha256":  "7dbbc78eb46fe4a70518b0b7783458ac31005393ba81cdcd3e08ae5ca9a8cee1"
+                  },
+                  {
+                      "path":  "matlab/Rt.m",
+                      "bytes":  592,
+                      "sha256":  "c11aace1076ebc353233ecece68ad8a973c25dd8c2d5c0f30d8bc57fe55049b3"
+                  },
+                  {
+                      "path":  "matlab/run_frozen_external_comparison.m",
+                      "bytes":  3237,
+                      "sha256":  "a7fb3f480f248f0b57102e9a4a17f572768e744e4960dc69c2d27bf8d3ba3c5f"
+                  },
+                  {
+                      "path":  "matlab/run_old_v2_combined_ablation.m",
+                      "bytes":  366,
+                      "sha256":  "9d056931304312a3f0d011b82bc425d7e712674e0f5cee64c9668102bed9c1d5"
+                  },
+                  {
+                      "path":  "matlab/run_old_v2_convergence_part.m",
+                      "bytes":  3497,
+                      "sha256":  "17a100074ed2d2f4b3856bfce037fd536637877be87ed1e6788113aa18f77890"
+                  },
+                  {
+                      "path":  "matlab/run_old_v2_standalone_traces.m",
+                      "bytes":  2202,
+                      "sha256":  "876c8bce6d9009e312e44bb86487b7bccba5e45f38472ee65569d26e1cb7616a"
+                  },
+                  {
+                      "path":  "matlab/run_paper_experiment.m",
+                      "bytes":  7260,
+                      "sha256":  "410e36b6cd901bdd41b567774db7fe9081d9b6761c933097aea2752189dd6984"
+                  },
+                  {
+                      "path":  "matlab/run_shared_framework_model_comparison.m",
+                      "bytes":  2947,
+                      "sha256":  "402702b5949f10dbb6724ccd4006f2422c27dbd0043ef4597b4ff066af4d6e63"
+                  },
+                  {
+                      "path":  "matlab/runAblationStudy.m",
+                      "bytes":  13119,
+                      "sha256":  "fabfaec32ada9442d13e31559eb00030d702e93c17e1bb0b8dd226a7f11422de"
+                  },
+                  {
+                      "path":  "matlab/runAlgorithmComparison.m",
+                      "bytes":  6809,
+                      "sha256":  "551eb9f5ba0558e634dddce508782efe7e6af4888db87fecafc165c28b972a10"
+                  },
+                  {
+                      "path":  "matlab/runBaselineOnce.m",
+                      "bytes":  10488,
+                      "sha256":  "0f4e3aee9fac1448d9333be808a03dbf4e60d546464d236a76d1dac5acb2981f"
+                  },
+                  {
+                      "path":  "matlab/runControlledResourceExperiments.m",
+                      "bytes":  6028,
+                      "sha256":  "b9c4e21fdd0719c40fe8660c26a337ea48e66f03410b37c778f624c71aecd7a9"
+                  },
+                  {
+                      "path":  "matlab/runIHGAOnce.m",
+                      "bytes":  19960,
+                      "sha256":  "269a94926e7b2fcf737b0e1e571018d0a0f3dd182705b6f74001c149c341ba0c"
+                  },
+                  {
+                      "path":  "matlab/runNodeCorrelationExperiment.m",
+                      "bytes":  3047,
+                      "sha256":  "8f4788f6bf53434e58bd9dda3782c043702e1178bc6ff7c8c41e60260d1d0536"
+                  },
+                  {
+                      "path":  "matlab/runRoutePlanExport.m",
+                      "bytes":  3874,
+                      "sha256":  "a5f5644b3384676d01aba149bdf2b71d30c40e8ae7510dba2719871bc611a7bf"
+                  },
+                  {
+                      "path":  "matlab/runVehicleSensitivity.m",
+                      "bytes":  4295,
+                      "sha256":  "b6c8b727f655b6001dcf99b6a54509137d3198debb0fd8c55c517ab00afe7390"
+                  },
+                  {
+                      "path":  "matlab/speedv.m",
+                      "bytes":  382,
+                      "sha256":  "8f9c28aad5b22ff9e59c2ef47e7d8e020f54293bc6e017c2a9fe8ec82291359a"
+                  },
+                  {
+                      "path":  "matlab/Swap.m",
+                      "bytes":  3103,
+                      "sha256":  "c540280efb21831231db46f563f59727945ac891be9127a31156cd9d36692145"
+                  },
+                  {
+                      "path":  "README.md",
+                      "bytes":  7305,
+                      "sha256":  "4927b3080c73fb4fcf5b8d105d5b4c9545beb8627f1b16acfd55576a2336a507"
+                  },
+                  {
+                      "path":  "reproduce.py",
+                      "bytes":  10895,
+                      "sha256":  "1a2338357d8c4594f3f37ab97df8ce3bca615d556fe4941551d019100de4f138"
+                  },
+                  {
+                      "path":  "requirements.txt",
+                      "bytes":  49,
+                      "sha256":  "96804dc7372d745bc46aebc58964107cb6864e785d42e4d9b7b7ae6d05f6f334"
+                  },
+                  {
+                      "path":  "source_data/frozen/ablation_paper_lite_20260804_085740.csv",
+                      "bytes":  5679,
+                      "sha256":  "4e45e31522f6c1014efca21b921ac1fe343071081adaedd53072c5dcc2a7ea7c"
+                  },
+                  {
+                      "path":  "source_data/frozen/ablation_paper_lite_20260804_085742.csv",
+                      "bytes":  5646,
+                      "sha256":  "64b09f01553a9f5af010f531b53da44a60c0867e50e10663dcbd9f1b1480d94f"
+                  },
+                  {
+                      "path":  "source_data/frozen/ablation_paper_lite_20260804_085748.csv",
+                      "bytes":  5660,
+                      "sha256":  "563e1c738c55135e46c20dc1163c131026420a093e18133afd3ca2b80c2939c0"
+                  },
+                  {
+                      "path":  "source_data/frozen/algorithm_comparison_paper_lite_20260804_121531.csv",
+                      "bytes":  6553,
+                      "sha256":  "7746861d4d0eb81a20f9d1bbe7f2d6da479354e8870a4f4da18e1b6ab7173368"
+                  },
+                  {
+                      "path":  "source_data/frozen/algorithm_comparison_paper_lite_20260804_121532.csv",
+                      "bytes":  6514,
+                      "sha256":  "d6636d0867106396a2d1748b25bf5f6bf0083d16d0682b71e58ad0eeb70cb1e6"
+                  },
+                  {
+                      "path":  "source_data/frozen/algorithm_comparison_paper_lite_20260804_122225.csv",
+                      "bytes":  6524,
+                      "sha256":  "a63e1afd6a28332a7c473cf3b120aa017bb52085030ca684758165ae1ba04788"
+                  },
+                  {
+                      "path":  "source_data/frozen/algorithm_comparison_paper_lite_c101_25_20260804_201712.csv",
+                      "bytes":  6520,
+                      "sha256":  "8938383765c5235084def250dad23f284440603ce592ab7117477ec7f922101d"
+                  },
+                  {
+                      "path":  "source_data/frozen/algorithm_comparison_paper_lite_hc1_100_frozen.csv",
+                      "bytes":  1876,
+                      "sha256":  "913fb8d56821a3c28ec4eef13f6e6d5ec4024ffa6beacfe4d6362100fa1e8007"
+                  },
+                  {
+                      "path":  "source_data/frozen/algorithm_comparison_paper_lite_hr1_100_frozen.csv",
+                      "bytes":  1876,
+                      "sha256":  "71a6b278e747ea59e3b42222eace3e565a7051482980633bb2c774281d212fc6"
+                  },
+                  {
+                      "path":  "source_data/frozen/algorithm_comparison_paper_lite_hrc1_100_frozen.csv",
+                      "bytes":  1886,
+                      "sha256":  "18318895c4eb3ac17f6194d5c89a57b0b3d0601a983987d283f4538eaaf8c8ec"
+                  },
+                  {
+                      "path":  "source_data/frozen/algorithm_comparison_paper_lite_r101_25_20260804_201712.csv",
+                      "bytes":  6537,
+                      "sha256":  "7a86cd8518f5a1feee91a43ecc6912528668158535698eb76a5b92d9855a2a1c"
+                  },
+                  {
+                      "path":  "source_data/frozen/algorithm_comparison_paper_lite_rc101_25_20260804_201714.csv",
+                      "bytes":  6513,
+                      "sha256":  "21d6cfe887df20dc48384c0f7ce1c228236816482cca73f74887ae8e09e902da"
+                  },
+                  {
+                      "path":  "source_data/frozen/controlled_resources_old_v2_C.csv",
+                      "bytes":  9379,
+                      "sha256":  "631d5ccaf12be44135095ed7a8d943d04836c4766aa197697be0dbccba9eb05e"
+                  },
+                  {
+                      "path":  "source_data/frozen/controlled_resources_old_v2_R.csv",
+                      "bytes":  9385,
+                      "sha256":  "f39209a87326e9e45a17dae6df5c3922788d286c5f324cb95567b0c3593d17ff"
+                  },
+                  {
+                      "path":  "source_data/frozen/controlled_resources_old_v2_RC.csv",
+                      "bytes":  9422,
+                      "sha256":  "f5f2a52c0e777e8118e8e928fcd78da8a908b812d9222dbedf4766cfc6cf7790"
+                  },
+                  {
+                      "path":  "source_data/frozen/convergence_20run_c101_trace.csv",
+                      "bytes":  831690,
+                      "sha256":  "c9af9e1cbc7ae4001b523b763ca5e6ff77b104ce62a2b440ec731b2a6a6f038a"
+                  },
+                  {
+                      "path":  "source_data/frozen/convergence_20run_r101_trace.csv",
+                      "bytes":  831475,
+                      "sha256":  "ea95f506689b7cead77998b9415130f27e402740a93aeed794b7d74da8cc52db"
+                  },
+                  {
+                      "path":  "source_data/frozen/convergence_20run_rc101_trace.csv",
+                      "bytes":  845149,
+                      "sha256":  "bea4a4f155ba0da7478df00141eb0aa43cd4b50ebcce2cf0c7b7725bc058b4c5"
+                  },
+                  {
+                      "path":  "source_data/frozen/node_correlation_old_v2_C.csv",
+                      "bytes":  163349,
+                      "sha256":  "aead2536ffd40a9ed2e2b1bf78352a17b5c391105513aa0be832fae60c981ca0"
+                  },
+                  {
+                      "path":  "source_data/frozen/node_correlation_old_v2_R.csv",
+                      "bytes":  163351,
+                      "sha256":  "19abefbf7e5f243df9d334e841f473f3829928c32b92b2ab0833754cf3951fd1"
+                  },
+                  {
+                      "path":  "source_data/frozen/node_correlation_old_v2_RC.csv",
+                      "bytes":  164452,
+                      "sha256":  "d03341cacae3637ff0e03aeaabed450fd0e4f0a4e95a0884165672e99e77d5f4"
+                  },
+                  {
+                      "path":  "source_data/frozen/shared_framework_models_c101_25.csv",
+                      "bytes":  7711,
+                      "sha256":  "58c5195d280897c3d42df6ff046dec2aac3d017d3f924bc92c220f5c28f69942"
+                  },
+                  {
+                      "path":  "source_data/frozen/shared_framework_models_r101_25.csv",
+                      "bytes":  7729,
+                      "sha256":  "f64e81f8d5250feb507e19fc90a7942cdd482474f3dcc34ac7fbdbbe06189f0a"
+                  },
+                  {
+                      "path":  "source_data/frozen/shared_framework_models_rc101_25.csv",
+                      "bytes":  7799,
+                      "sha256":  "ae14ccf3ee70b398872e80edff3e42e3d871edfa91bae8cc5b00f9a793203c22"
+                  },
+                  {
+                      "path":  "source_data/historical/ablation_paper_lite_10run_combined.csv",
+                      "bytes":  37952,
+                      "sha256":  "720fe58b059661af8ee677bacf76a16adba93451324ca91646f10bbf7d056d05"
+                  },
+                  {
+                      "path":  "source_data/historical/convergence_old_v2_frozen_authoritative.csv",
+                      "bytes":  1790178,
+                      "sha256":  "7bc32b8f9b85da48c8cf9ec254b59b0337934be8cb1bee884db4da58806a576f"
+                  },
+                  {
+                      "path":  "source_data/historical/vehicle_sensitivity_paper_20260430_033532.csv",
+                      "bytes":  16818,
+                      "sha256":  "5bcdb70cdf525c264d92822f9a9a4227208540f94c301f49d78a209d54d1cbe8"
+                  },
+                  {
+                      "path":  "source_data/objective_original_5run/shared_framework_models_c101_25.csv",
+                      "bytes":  2058,
+                      "sha256":  "fe48f96cdae7960ee39ba82f371d483a1bd0b41df8bcf0461e527fcf2992a1c8"
+                  },
+                  {
+                      "path":  "source_data/objective_original_5run/shared_framework_models_r101_25.csv",
+                      "bytes":  2061,
+                      "sha256":  "8655a1647769cfadfed026035acbe93bda6953f5e089400c5562a8e44e28ae10"
+                  },
+                  {
+                      "path":  "source_data/objective_original_5run/shared_framework_models_rc101_25.csv",
+                      "bytes":  2080,
+                      "sha256":  "d3e1848a2c1987ca728d1aa87a7bf74f40fb3c1058c10dccd9f901964632bbf4"
+                  },
+                  {
+                      "path":  "tests/smoke_synthetic.m",
+                      "bytes":  4162,
+                      "sha256":  "9743581a90942893dfbae8d8a66f36a8580f9a0dfe508bce38ab00a92f7fdb80"
+                  },
+                  {
+                      "path":  "tests/test_public_subset.py",
+                      "bytes":  3234,
+                      "sha256":  "60bb1fb822ca0f8688fe507c3f81c7ef94660236a4acf75903c3f9239e8d6914"
+                  },
+                  {
+                      "path":  "VALIDATION.json",
+                      "bytes":  3560,
+                      "sha256":  "fb208416695d33860294d712bc674600e6538edc2c9726226fadc20aca45e810"
+                  }
+              ]
+}

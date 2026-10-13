@@ -1,0 +1,98 @@
+{
+  "validation_date": "2026-10-13",
+  "python_version": "3.12",
+  "python_dependencies": {
+    "numpy": "2.4.4",
+    "pandas": "3.0.0",
+    "matplotlib": "3.10.8"
+  },
+  "regression_tests_passed": 8,
+  "archived_statistics": {
+    "integrity_passed": true,
+    "files_checked": 108,
+    "python_syntax_passed": true,
+    "archived_statistics_passed": true,
+    "configuration_groups_checked": 102,
+    "main_observations": 180,
+    "external_observations": 45,
+    "ablation_observations": 120,
+    "objective_observations": 180,
+    "original_objective_observations_preserved": 45,
+    "resource_observations": 120,
+    "node_observations": 3000,
+    "convergence_rows": 54000,
+    "archived_evidence_comparisons": [
+      "ablation_old_v2_combined_10run_authoritative.csv",
+      "ablation_old_v2_combined_10run_interactions.csv",
+      "ablation_old_v2_combined_10run_marginal_stats.csv",
+      "ablation_old_v2_combined_10run_paired_stats.csv",
+      "ablation_old_v2_combined_10run_summary.csv",
+      "algorithm_comparison_old_v2_20run_authoritative.csv",
+      "algorithm_comparison_old_v2_20run_paired_stats.csv",
+      "algorithm_comparison_old_v2_20run_summary.csv",
+      "controlled_period_old_v2_summary.csv",
+      "controlled_release_old_v2_summary.csv",
+      "controlled_resources_old_v2_authoritative.csv",
+      "convergence_old_v2_20run_authoritative.csv",
+      "frozen_external_comparison_authoritative.csv",
+      "frozen_external_comparison_summary.csv",
+      "node_correlation_old_v2_seed_level.csv",
+      "node_correlation_old_v2_summary.csv",
+      "shared_framework_model_authoritative.csv",
+      "shared_framework_model_summary.csv"
+    ],
+    "fresh_benchmark_optimization_run": false,
+    "manuscript_or_graphics_generated": false,
+    "source_data_modified": false
+  },
+  "matlab_synthetic_smoke": {
+    "passed": true,
+    "fixture": "synthetic grid, not a benchmark",
+    "release": "2022b",
+    "generations": 2,
+    "checks": [
+      {
+        "algorithm": "PDR-HGA",
+        "loss": 263.68384254258285,
+        "deterministic": true,
+        "all_nodes_once": true,
+        "capacity_inventory_feasible": true
+      },
+      {
+        "algorithm": "IMA",
+        "loss": 266.1381490778451,
+        "deterministic": true,
+        "all_nodes_once": true,
+        "capacity_inventory_feasible": true
+      },
+      {
+        "algorithm": "VNS",
+        "loss": 271.61025525978187,
+        "deterministic": true,
+        "all_nodes_once": true,
+        "capacity_inventory_feasible": true
+      }
+    ],
+    "missing_input_guard_passed": true,
+    "adapted_wrapper_smoke_passed": true,
+    "files_checkcode_checked": 41,
+    "checkcode_advisories": 199,
+    "syntax_errors": [],
+    "fresh_benchmark_replication": false
+  },
+  "limitations": [
+    "No fresh benchmark optimization was run.",
+    "MATLAB checkcode reports 199 static advisories; frozen core code is preserved, not refactored.",
+    "Archived zero penalties are not an independent saved-route constraint audit.",
+    "No manuscript or artwork was published in this new directory."
+  ],
+  "git_whitespace_validation": {
+    "new_adapters_and_documentation": "checked separately",
+    "unchanged_frozen_matlab": "legacy trailing whitespace retained intentionally for byte-identical archival code"
+  },
+  "staged_git_export_validation": {
+    "manifest_integrity_passed": true,
+    "archived_statistics_passed": true,
+    "newline_conversion_disabled": true
+  }
+}

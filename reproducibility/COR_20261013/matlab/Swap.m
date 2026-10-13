@@ -1,0 +1,88 @@
+function [flag,swapScoreNew] = Swap(k,swapScore)
+global route                                                               % 所有个体的路径 carNum * n * popsize   n为受灾点数量
+global road                                                                % 所有个体的选择的行驶路线 popsize * n（通过道路z到i点）
+global lengthR                                                             % 所有个体的每条道路的长度 popsize * n
+global numR                                                                % 所有个体的路径数量 1 * popsize
+global arrivalTime                                                         % 所有个体的每个受灾点的到达时间 popsize * n
+global fitness                                                             % 所有个体的适应度值 1 * popsize
+global damage                                                              % 每个受灾点的损失 popsize * n
+global initialDeteriorationNode                                            % 每个点的初始毁坏程度 n * 1
+global deteriorationRateNode                                               % 每个点的毁坏率 n * 1
+
+
+flag = 0;
+fitK = fitness(k);
+routeK = route(:,:,k);
+numRK = numR(k);
+lengthRK = lengthR(k,:);
+roadK = road(k,:);
+damageK = damage(k,:);
+arrivalTimeK = arrivalTime(k,:);
+swapScoreNew = swapScore;
+
+r = randperm(numRK,1);                                                     % 随机选择一条路
+while lengthRK(r) <= 1
+    r = randperm(numRK,1);
+end
+
+p1 = randperm(lengthRK(r),1);
+p2 = randperm(lengthRK(r),1);
+while p1 == p2
+    p1 = randperm(lengthRK(r),1);
+end
+
+s1 = min(p1,p2);
+s2 = max(p1,p2);
+
+sumswapScore = sum(swapScore);
+pswapScore = swapScore ./ sumswapScore;
+mswapScore = cumsum(pswapScore);
+
+rd = rand;
+for i = 1:length(swapScore)
+    if rd > mswapScore(i)
+        continue;
+    else
+        beta = i;
+        break;
+    end
+end
+
+switch beta
+    case 1
+        if initialDeteriorationNode(routeK(r,s1)) < initialDeteriorationNode(routeK(r,s2))
+            temp = routeK(r,s1);
+            routeK(r,s1) = routeK(r,s2);
+            routeK(r,s2) = temp;
+            [fitK,damageKnew,roadKnew,arrivalTimeKnew] = objectiveK(routeK,lengthRK,roadK,arrivalTimeK,damageK,r);
+        end
+    case 2
+        if deteriorationRateNode(routeK(r,s1)) < deteriorationRateNode(routeK(r,s2))
+            temp = routeK(r,s1);
+            routeK(r,s1) = routeK(r,s2);
+            routeK(r,s2) = temp;
+            [fitK,damageKnew,roadKnew,arrivalTimeKnew] = objectiveK(routeK,lengthRK,roadK,arrivalTimeK,damageK,r);
+        end
+    case 3
+        temp = routeK(r,s1);
+        routeK(r,s1) = routeK(r,s2);
+        routeK(r,s2) = temp;
+        [fitK,damageKnew,roadKnew,arrivalTimeKnew] = objectiveK(routeK,lengthRK,roadK,arrivalTimeK,damageK,r);
+end
+
+if fitK < fitness(k)
+    swapScore(beta) = swapScore(beta) + abs(fitness(k) - fitK) ./ fitness(k);
+    swapScoreNew = swapScore;
+    fitness(k) = fitK;
+    damage(k,:) = damageKnew;
+    road(k,:) = roadKnew;
+    arrivalTime(k,:) = arrivalTimeKnew;
+    route(:,:,k) = routeK;
+    flag = 1;
+end
+end
+    
+    
+
+
+

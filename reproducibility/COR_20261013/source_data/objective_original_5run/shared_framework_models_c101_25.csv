@@ -1,0 +1,16 @@
+modelName,objectiveMode,algorithmVersion,caseName,seed,iterMax,popsize,searchObjective,totalAffectedNodeLoss,capacityViolation,inventoryViolation,isFeasible,elapsedSeconds
+CVRP objective,distance,critical_damage_v2_full,C101-25,17601,300,8,558.3997258,465.018131854389,0,0,1,151.6045346
+CCVRP objective,cumulative_arrival,critical_damage_v2_full,C101-25,17601,300,8,42787.965560623,397.830708063345,0,0,1,126.3652057
+MP-DDVRP objective,dynamic_damage,critical_damage_v2_full,C101-25,17601,300,8,369.097863182006,369.097863182006,0,0,1,95.0147291
+CVRP objective,distance,critical_damage_v2_full,C101-25,17602,300,8,589.906033,477.40450386752,0,0,1,254.2812818
+CCVRP objective,cumulative_arrival,critical_damage_v2_full,C101-25,17602,300,8,42341.9280933788,428.873402147653,0,0,1,168.5837496
+MP-DDVRP objective,dynamic_damage,critical_damage_v2_full,C101-25,17602,300,8,369.601108471578,369.601108471578,0,0,1,138.6604309
+CVRP objective,distance,critical_damage_v2_full,C101-25,17603,300,8,549.1985491,472.969026118653,0,0,1,160.9922728
+CCVRP objective,cumulative_arrival,critical_damage_v2_full,C101-25,17603,300,8,43576.2109732403,429.389691464879,0,0,1,152.3953931
+MP-DDVRP objective,dynamic_damage,critical_damage_v2_full,C101-25,17603,300,8,369.06645782512,369.06645782512,0,0,1,134.3445539
+CVRP objective,distance,critical_damage_v2_full,C101-25,17604,300,8,510.8793816,490.25736295823,0,0,1,189.0898921
+CCVRP objective,cumulative_arrival,critical_damage_v2_full,C101-25,17604,300,8,44798.9174898199,399.63266757212,0,0,1,134.5028682
+MP-DDVRP objective,dynamic_damage,critical_damage_v2_full,C101-25,17604,300,8,369.09149554678,369.09149554678,0,0,1,103.0332999
+CVRP objective,distance,critical_damage_v2_full,C101-25,17605,300,8,549.2790373,479.964932546986,0,0,1,183.9180503
+CCVRP objective,cumulative_arrival,critical_damage_v2_full,C101-25,17605,300,8,44110.3669928539,430.528236652893,0,0,1,139.2228035
+MP-DDVRP objective,dynamic_damage,critical_damage_v2_full,C101-25,17605,300,8,369.060081329865,369.060081329865,0,0,1,115.2044722
