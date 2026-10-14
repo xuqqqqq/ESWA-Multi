@@ -1,38 +1,54 @@
-# ESWA-Multi
+# PDR-HGA: code and results for review
 
-MATLAB implementation and manuscript assets for a multi-period emergency vehicle-routing study with dynamic node-road damage.
+Supporting code and archived numerical results for:
 
-## Main MATLAB entry points
+**A Multi-Period Dynamic Road Damage Vehicle Routing Problem for
+Post-Earthquake Emergency-Supply Delivery**
 
-- `runIHGAOnce.m`: run the proposed IHGA on one instance.
-- `runAlgorithmComparison.m`: compare IHGA with VNS and IMA baselines.
-- `runAblationStudy.m`: run operator-ablation experiments.
-- `runModelComparison.m`: compare the damage-oriented model with CVRP/CCVRP-style baselines.
-- `runMultiPeriodImportance.m`: evaluate staged multi-period dispatch effects.
-- `runVehicleSensitivity.m`: run vehicle-number sensitivity experiments.
+## Reviewer entry point
 
-## Quick smoke test
+The submission's frozen code and archived-statistics package is in
+**[reproducibility/COR_20261013](reproducibility/COR_20261013/README.md)**.
+It is available on the repository's single branch, `main`.
+Use that directory for review, rather than the older development files at
+the repository root. Earlier commits and files are retained as project history;
+the root-level MATLAB and LaTeX files are not the frozen submission package.
 
-```matlab
-r = runIHGAOnce('C101-25', 18, 10701, 20, 6);
-disp(r.algorithmVersion);
-disp(r.bestFitness);
+| Material | Location |
+| --- | --- |
+| Frozen solver and experiment wrappers | [matlab/](reproducibility/COR_20261013/matlab) |
+| Archived per-run results | [source_data/](reproducibility/COR_20261013/source_data) |
+| Numerical summaries and statistical comparisons | [evidence/](reproducibility/COR_20261013/evidence) |
+| Analysis scripts | [analysis/](reproducibility/COR_20261013/analysis) |
+| Experiment budgets and random seeds | [EXPERIMENT_CONFIGS.json](reproducibility/COR_20261013/EXPERIMENT_CONFIGS.json) |
+| Validation and regression tests | [VALIDATION.json](reproducibility/COR_20261013/VALIDATION.json), [tests/](reproducibility/COR_20261013/tests) |
+
+## Verify and recompute archived statistics
+
+From the repository root, with Python 3.12:
+
+```sh
+cd reproducibility/COR_20261013
+python -m pip install -r requirements.txt
+python -B reproduce.py verify
+python -B -m unittest discover -s tests -v
+python -B reproduce.py audit
+python -B reproduce.py rebuild --output generated
 ```
 
-## Manuscript
+`generated/` must be new or empty. These commands validate the published files
+and recompute statistics from archived observations; they do not rerun the
+optimization experiments.
 
-The LaTeX manuscript is under `latex/`:
+## MATLAB runs and input access
 
-```powershell
-cd latex
-latexmk -pdf -interaction=nonstopmode -halt-on-error manuscript.tex
-```
+The package includes a synthetic smoke test that requires no benchmark inputs.
+Fresh benchmark runs require MATLAB and separately obtained authorized adapted
+input matrices. See the package's [README](reproducibility/COR_20261013/README.md)
+for commands and [INPUTS.md](reproducibility/COR_20261013/INPUTS.md) for input
+requirements and access limitations. This public package is a code/statistics
+subset, not the complete local submission archive.
 
-Generated experiment outputs and local agent/runtime files are intentionally ignored by git. Re-run the scripts above to regenerate result CSV files.
-
-## Conceptual figures
-
-Use data-generated figures for numerical results and GPT Image2 only for conceptual mechanism diagrams. The recommended figure plan and prompts are in:
-
-- `latex/figure_strategy.md`
-- `latex/figure_prompts_image2.md`
+The frozen package's source, results, seeds and checksum manifest are unchanged
+from its initial publication. No additional software license or third-party
+data redistribution permission is granted by this branch consolidation.
