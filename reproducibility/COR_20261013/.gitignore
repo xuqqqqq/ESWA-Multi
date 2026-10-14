@@ -1,6 +1,0 @@
-__pycache__/
-*.py[cod]
-generated*/
-new_runs/
-matlab/data/
-synthetic_test*/

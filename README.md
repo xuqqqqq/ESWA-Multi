@@ -1,54 +1,95 @@
-# PDR-HGA: code and results for review
+# PDR-HGA
 
-Supporting code and archived numerical results for:
+Source code and experimental data for **A Multi-Period Dynamic Road Damage
+Vehicle Routing Problem for Post-Earthquake Emergency-Supply Delivery**.
 
-**A Multi-Period Dynamic Road Damage Vehicle Routing Problem for
-Post-Earthquake Emergency-Supply Delivery**
-
-## Reviewer entry point
-
-The submission's frozen code and archived-statistics package is in
-**[reproducibility/COR_20261013](reproducibility/COR_20261013/README.md)**.
-It is available on the repository's single branch, `main`.
-Use that directory for review, rather than the older development files at
-the repository root. Earlier commits and files are retained as project history;
-the root-level MATLAB and LaTeX files are not the frozen submission package.
-
-| Material | Location |
-| --- | --- |
-| Frozen solver and experiment wrappers | [matlab/](reproducibility/COR_20261013/matlab) |
-| Archived per-run results | [source_data/](reproducibility/COR_20261013/source_data) |
-| Numerical summaries and statistical comparisons | [evidence/](reproducibility/COR_20261013/evidence) |
-| Analysis scripts | [analysis/](reproducibility/COR_20261013/analysis) |
-| Experiment budgets and random seeds | [EXPERIMENT_CONFIGS.json](reproducibility/COR_20261013/EXPERIMENT_CONFIGS.json) |
-| Validation and regression tests | [VALIDATION.json](reproducibility/COR_20261013/VALIDATION.json), [tests/](reproducibility/COR_20261013/tests) |
-
-## Verify and recompute archived statistics
-
-From the repository root, with Python 3.12:
-
-```sh
-cd reproducibility/COR_20261013
-python -m pip install -r requirements.txt
-python -B reproduce.py verify
-python -B -m unittest discover -s tests -v
-python -B reproduce.py audit
-python -B reproduce.py rebuild --output generated
+```text
+src/
+  matlab/          Routing algorithms and experiment scripts
+  python/          Statistical analysis and plotting
+data/
+  instances/       Six adapted cases and node/road damage parameters
+  results/         Run-level results, convergence traces and summaries
+README.md
+requirements.txt
 ```
 
-`generated/` must be new or empty. These commands validate the published files
-and recompute statistics from archived observations; they do not rerun the
-optimization experiments.
+## Run the algorithms
 
-## MATLAB runs and input access
+Open MATLAB in the repository root. The instance files are included.
 
-The package includes a synthetic smoke test that requires no benchmark inputs.
-Fresh benchmark runs require MATLAB and separately obtained authorized adapted
-input matrices. See the package's [README](reproducibility/COR_20261013/README.md)
-for commands and [INPUTS.md](reproducibility/COR_20261013/INPUTS.md) for input
-requirements and access limitations. This public package is a code/statistics
-subset, not the complete local submission archive.
+```matlab
+addpath(fullfile(pwd, 'src', 'matlab'));
+run_experiment('smoke', [], 'C101-25');
+```
 
-The frozen package's source, results, seeds and checksum manifest are unchanged
-from its initial publication. No additional software license or third-party
-data redistribution permission is granted by this branch consolidation.
+The smoke test runs two generations to check loading and execution. To run
+the experiments, use the following commands. Omitting the second argument
+runs all recorded repeat numbers; use `1` to run just the first repeat.
+
+```matlab
+run_experiment('comparison', 1);       % PDR-HGA, IMA and VNS
+run_experiment('external', 1);         % Extended cases
+run_experiment('ablation', 1);         % Four ablation configurations
+run_experiment('convergence', 1);      % Algorithm convergence curves
+run_experiment('objectives', 1);       % Three routing objectives
+run_experiment('resources', 1);        % Period counts and release schedules
+run_experiment('nodes', 1);            % Node-parameter associations
+run_experiment('dispatch');           % Route and road-choice export
+run_experiment('fleet');              % Vehicle-number sensitivity
+```
+
+Each call writes new files to its own directory under `output/`. The saved
+paper results in `data/results/` are not overwritten. Run separate MATLAB
+processes for parallel jobs because the solver uses global arrays.
+
+To select one case, provide a third argument, for example:
+
+```matlab
+run_experiment('comparison', 1, 'r101-25');
+run_experiment('external', 1, 'HC1-100');
+```
+
+## Analyze the saved results
+
+With Python 3.12:
+
+```sh
+python -m pip install -r requirements.txt
+python src/python/analyze_results.py
+```
+
+This recomputes statistics and numerical plots from the supplied observations.
+It does not run the routing algorithms. Output is saved under `output/analysis/`.
+Use `--output another_directory` for another analysis run; an existing nonempty
+output directory is not overwritten.
+
+## Experiments and data
+
+| Experiment | Results directory | Runs per case and configuration |
+| --- | --- | --- |
+| Main algorithm comparison | `data/results/comparison/` | 20 |
+| Extended algorithm comparison | `data/results/extended_comparison/` | 5 |
+| Ablation | `data/results/ablation/` | 10 |
+| Algorithm convergence | `data/results/convergence/` | 20 |
+| Routing-objective comparison | `data/results/model_comparison/` | 20 |
+| Vehicle sensitivity | `data/results/fleet_sensitivity/` | 5 |
+| Period and inventory-release sensitivity | `data/results/resource_sensitivity/` | 5 |
+| Node-parameter associations | `data/results/node_parameters/` | 10 solutions, 100 nodes each |
+| Dispatch illustration | `data/results/dispatch/` | One saved plan per case |
+
+The principal experiments use 300 generations and a population of eight;
+VNS uses one incumbent. Vehicle sensitivity uses the recorded 600-generation,
+population-10 warm-start setting. Seeds, solver versions, budgets and resource
+settings are recorded in the result CSVs. The convergence and main-comparison
+experiments use their respective saved seed cohorts.
+
+The six cases adapt the [Solomon benchmarks](https://www.sintef.no/projectweb/top/vrptw/solomon-benchmark/)
+and [Gehring and Homberger benchmarks](https://www.sintef.no/projectweb/top/vrptw/homberger-benchmark/).
+Each adapted case has 100 affected nodes. The `-25` suffix in three file names
+is a historical identifier, not the node count. Node and road damage parameters
+are synthetic model inputs, not earthquake measurements. Input formats and
+result columns are described in [data/README.md](data/README.md).
+
+The MATLAB code includes PDR-HGA and the IMA/VNS implementations used for
+the comparisons.
